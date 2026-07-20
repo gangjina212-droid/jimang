@@ -135,7 +135,6 @@ body.dark .m-part{background:#31215c}
       <div class="view-seg" id="view-seg">
         <button class="vbtn active" data-view="week">▤ 주간</button>
         <button class="vbtn" data-view="month">▦ 월간</button>
-        <button class="vbtn" data-view="up">▷ 다가오는 일정</button>
       </div>
 
       <div id="v-week">
@@ -156,9 +155,11 @@ body.dark .m-part{background:#31215c}
         <div class="cal-grid" id="calGrid"></div>
       </div>
 
-      <div id="v-up" style="display:none">
-        <div id="upcoming"><div class="spinner"></div></div>
-      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">다가오는 일정</span>
+      <div id="upcoming"><div class="spinner"></div></div>
     </div>
 
     <div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
@@ -247,7 +248,6 @@ async function init(){
       document.querySelectorAll('#view-seg .vbtn').forEach(function(x){ x.classList.toggle('active', x.dataset.view===curView); });
       document.getElementById('v-week').style.display  = curView==='week' ?'':'none';
       document.getElementById('v-month').style.display = curView==='month'?'':'none';
-      document.getElementById('v-up').style.display    = curView==='up'   ?'':'none';
     });
   });
   renderWeek(); renderCalendar(); renderUpcoming();
