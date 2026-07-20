@@ -25,10 +25,16 @@
 .roul-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
   width:52px;height:52px;border-radius:50%;border:4px solid var(--ink);background:var(--magenta)}
 .roul-labels{position:absolute;inset:0;pointer-events:none}
-.roul-lab{position:absolute;left:50%;top:50%;transform-origin:0 50%;
+/* ⚠️ translateX(%) 는 "자기 글자 폭" 기준이라 짧은 글자('1')는 중앙에 뭉친다.
+   대신 원 반지름(=50%)만큼 폭을 가진 막대를 회전시키고, 그 바깥 끝에 글자를 붙인다. */
+.roul-lab{position:absolute;left:50%;top:50%;width:50%;height:22px;margin-top:-11px;
+  transform-origin:0 50%;display:flex;align-items:center;justify-content:flex-end;
+  padding-right:9%;box-sizing:border-box;
   font-size:13.5px;font-weight:800;color:#fff;white-space:nowrap;
-  text-shadow:0 1px 0 var(--ink),0 0 4px rgba(27,15,56,.9)}
-.roul-lab span{display:inline-block;transform:translateY(-50%)}
+  text-shadow:0 1px 0 var(--ink),0 0 5px rgba(27,15,56,.95)}
+/* 왼쪽 절반 글자는 그냥 두면 거꾸로 보인다 → 자리는 그대로(바깥 끝) 두고 글자만 180도 뒤집는다.
+   정렬까지 바꾸면 글자가 원 중심 쪽으로 딸려 들어온다(실제로 그렇게 터졌음) */
+.roul-lab.flip span{transform:rotate(180deg)}
 .roul-out{font-family:var(--f-serif);font-weight:900;font-size:20px;text-align:center;min-height:32px}
 .roul-list{font-size:13.5px;color:var(--text-soft);text-align:center;line-height:1.7}
 
@@ -207,11 +213,14 @@ function paintRoul(){
      칸 중앙(step/2)에 맞춰 회전시킨 뒤 안쪽에서 바깥으로 눕힌다 */
   var box=document.getElementById('roulLabels'), html='';
   for(var j=0;j<n;j++){
-    var mid = j*step + step/2 - 90;
+    var mid = j*step + step/2 - 90;          /* conic-gradient 는 12시 시작 → -90 보정 */
+    var norm = ((mid % 360) + 360) % 360;
+    var flip = (norm > 90 && norm < 270);    /* 왼쪽 절반이면 글자를 뒤집는다 */
     var txt = String(ROUL[j]);
-    if(txt.length>7) txt = txt.slice(0,7)+'…';
-    var size = n>8 ? 11.5 : (n>6 ? 12.5 : 13.5);
-    html += '<div class="roul-lab" style="transform:rotate('+mid+'deg) translateX(30%);font-size:'+size+'px">'+
+    var cap  = n>8 ? 5 : (n>6 ? 7 : 8);      /* 칸이 좁을수록 글자 수를 줄인다 */
+    var size = n>8 ? 12.5 : (n>6 ? 13 : 14); /* 최소 12.5px — 그 이하는 안 읽힌다 */
+    if(txt.length>cap) txt = txt.slice(0,cap)+'…';
+    html += '<div class="roul-lab'+(flip?' flip':'')+'" style="transform:rotate('+mid+'deg);font-size:'+size+'px">'+
             '<span>'+txt.replace(/</g,'&lt;')+'</span></div>';
   }
   box.innerHTML=html;
