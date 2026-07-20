@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>관리자 — 지망ノ</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+body{padding:22px 3% 40px}
+.adwrap{max-width:1180px;margin:0 auto;display:grid;gap:16px}
+.adhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:5px solid var(--ink);
+  background:var(--ink);color:#fff;padding:14px 18px;box-shadow:8px 8px 0 rgba(224,95,180,.5)}
+.adhead .tt{font-family:var(--f-serif);font-weight:900;font-size:22px}
+.adhead .sub{font-family:var(--f-mono);font-size:13px;color:var(--pink)}
+.adhead .sp{flex:1}
+
+.tabs{display:flex;gap:7px;flex-wrap:wrap}
+.tab-btn{padding:9px 14px;border:3px solid var(--ink);background:#fff;color:var(--ink);
+  font-size:14.5px;font-weight:800;box-shadow:2px 2px 0 var(--lilac);transition:var(--transition)}
+body.dark .tab-btn{background:#31215c;color:#f4ecff}
+.tab-btn:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--magenta)}
+.tab-btn.active{background:var(--magenta);color:#fff;box-shadow:2px 2px 0 var(--ink)}
+.tab-panel{display:none}
+.tab-panel.active{display:grid;gap:16px}
+
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.form-grid.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.form-field{min-width:0;margin:0}
+.full{grid-column:1/-1}
+textarea.input{min-height:96px;resize:vertical;line-height:1.7}
+select.input{cursor:pointer}
+.row-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.del{width:34px;height:34px;border:3px solid var(--ink);background:#e04b5f;color:#fff;
+  font-size:15px;font-weight:800;line-height:1}
+.chk{display:flex;align-items:center;gap:7px;font-size:14.5px;font-weight:700}
+.chk input{width:20px;height:20px;accent-color:var(--magenta)}
+.daybox{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.daybox label{border:3px solid var(--ink);background:#fff;padding:9px 2px;text-align:center;
+  font-size:14px;font-weight:800;cursor:pointer;display:grid;gap:4px;justify-items:center}
+body.dark .daybox label{background:#31215c}
+.daybox input{width:18px;height:18px;accent-color:var(--magenta)}
+
+/* 🎨 팔레트 — 한 줄에 라벨·피커·hex 가 겹치지 않게 3열 고정 */
+.palette{display:grid;gap:10px}
+.pal-row{display:grid;grid-template-columns:130px 58px 1fr;align-items:center;gap:10px}
+.pal-row .pn{font-size:14.5px;font-weight:800}
+.pal-row input[type=color]{width:58px;height:38px;border:3px solid var(--ink);background:#fff;padding:2px;cursor:pointer}
+.pal-desc{grid-column:1/-1;font-size:12.5px;color:var(--text-soft);margin-top:-4px}
+.pal-prev{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pal-prev i{width:52px;height:34px;border:3px solid var(--ink);display:block}
+
+.iq-item{border:3px solid var(--ink);background:#fff;padding:12px 14px;margin-bottom:9px;
+  display:grid;grid-template-columns:1fr auto;gap:9px;align-items:start}
+body.dark .iq-item{background:#31215c}
+.iq-meta{font-family:var(--f-mono);font-size:12.5px;color:var(--text-soft)}
+.iq-msg{font-size:15px;white-space:pre-wrap;line-height:1.7;margin-top:3px}
+
+.login-overlay{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:400;padding:20px}
+.login-box{width:100%;max-width:380px;background:var(--cream);border:5px solid var(--ink);
+  box-shadow:10px 10px 0 var(--magenta);padding:28px}
+.login-title{font-family:var(--f-serif);font-weight:900;font-size:24px;margin-bottom:4px}
+.login-sub{font-size:14px;color:var(--text-soft);margin-bottom:14px}
+.login-err{color:#e04b5f;font-size:14px;font-weight:800;margin-top:8px;min-height:20px}
+@media(max-width:560px){
+  .pal-row{grid-template-columns:96px 52px 1fr;gap:7px}
+  .daybox{gap:4px}
+  .daybox label{padding:7px 0;font-size:12.5px}
+}
+</style>
+</head>
+<body>
+<script>if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark');</script>
+
+<div class="login-overlay" id="login">
+  <div class="login-box">
+    <div class="login-title">관리자 로그인</div>
+    <div class="login-sub">지망ノ 팬사이트 관리 페이지입니다.</div>
+    <input class="input" id="pw" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="login-err" id="loginErr"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:6px" onclick="doLogin()">들어가기</button>
+  </div>
+</div>
+
+<div class="adwrap" id="ad" style="display:none">
+  <div class="adhead">
+    <span class="tt">지망ノ 관리자</span>
+    <span class="sub">ADMIN CONSOLE</span>
+    <span class="sp"></span>
+    <a class="btn" href="../" target="_blank" rel="noopener">사이트 보기 ↗</a>
+    <div class="dk" onclick="toggleDark()"><i class="knob"></i></div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="main">🏠 메인</button>
+    <button class="tab-btn" data-tab="profile">🎀 프로필</button>
+    <button class="tab-btn" data-tab="notice">✉ 공지</button>
+    <button class="tab-btn" data-tab="schedule">▤ 일정</button>
+    <button class="tab-btn" data-tab="upbo">♡ 업보</button>
+    <button class="tab-btn" data-tab="song">♪ 노래</button>
+    <button class="tab-btn" data-tab="dress">👗 옷장</button>
+    <button class="tab-btn" data-tab="minigame">🎮 미니게임</button>
+    <button class="tab-btn" data-tab="inquiry">💬 문의</button>
+    <button class="tab-btn" data-tab="theme">🎨 테마</button>
+  </div>
+
+  <!-- ═════════ 🏠 메인 ═════════ -->
+  <div class="tab-panel active" id="tab-main">
+    <div class="card">
+      <span class="card-title">프로필 사진</span>
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="input-label">SOOP 아이디</label>
+          <input class="input" id="f-soop-id" placeholder="jimang2">
+          <span class="hint">아이디만 넣으면 SOOP 프사가 자동으로 걸립니다.</span>
+        </div>
+        <div class="form-field">
+          <label class="input-label">직접 이미지 주소 (선택)</label>
+          <input class="input" id="f-avatar" placeholder="https://...jpg / .gif">
+          <span class="hint">넣으면 SOOP 프사보다 <b>우선</b>합니다. 정사각(1:1) 이미지 권장. 움짤은 200px 이하로 줄여서 올리세요.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">기본 정보</span>
+      <div class="form-grid">
+        <div class="form-field"><label class="input-label">이름</label><input class="input" id="f-info-name" placeholder="지망ノ"></div>
+        <div class="form-field"><label class="input-label">읽기 / 소속 표기</label><input class="input" id="f-info-en" placeholder="ジマン · RUSH"><span class="hint">사이드바 이름 밑 작은 글씨</span></div>
+        <div class="form-field"><label class="input-label">캐치프레이즈</label><input class="input" id="f-info-catchphrase" placeholder="정신체리"></div>
+        <div class="form-field"><label class="input-label">성별</label><input class="input" id="f-info-gender" placeholder="여"></div>
+        <div class="form-field"><label class="input-label">소속</label><input class="input" id="f-info-team" placeholder="RUSH"></div>
+        <div class="form-field"><label class="input-label">팬네임</label><input class="input" id="f-info-fandom" placeholder="용망"></div>
+        <div class="form-field"><label class="input-label">데뷔일</label><input class="input" id="f-info-debut" placeholder="2023.02.07"><span class="hint">YYYY.MM.DD 형식</span></div>
+        <div class="form-field"><label class="input-label">생일</label><input class="input" id="f-info-birth" placeholder="02.12"><span class="hint">MM.DD 형식 — 이 값으로 D-Day를 자동 계산합니다</span></div>
+        <div class="form-field"><label class="input-label">콘텐츠</label><input class="input" id="f-info-content" placeholder="저챗·게임·노래"></div>
+        <div class="form-field"><label class="input-label">시그니처 곡</label><input class="input" id="f-info-song" placeholder="첫사랑"></div>
+        <div class="form-field full"><label class="input-label">해시태그</label><input class="input" id="f-info-tags" placeholder="시티팝, 첫사랑, 보라"><span class="hint">쉼표로 구분. 사이드바에 최대 4개까지 표시됩니다 (# 자동)</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">메인 히어로</span>
+      <div class="form-grid two">
+        <div class="form-field"><label class="input-label">한마디 (NOW PLAYING)</label><input class="input" id="f-hero-quote" placeholder="「난 너 좋아해」"></div>
+        <div class="form-field"><label class="input-label">메인 일러스트 주소</label><input class="input" id="f-main-art" placeholder="https://stimg.sooplive.com/...">
+          <span class="hint">가로형(16:9) 이미지 권장. SOOP 비공개 게시판에 올린 뒤 이미지 우클릭 → "이미지 주소 복사"</span></div>
+        <div class="form-field full"><label class="input-label">소개 문구</label><textarea class="input" id="f-main-story" placeholder="발로란트 · 마인크래프트 ..."></textarea>
+          <span class="hint">줄바꿈 그대로 반영됩니다 (메인·프로필 공용)</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">좋아 / 싫어</span>
+      <div class="form-grid">
+        <div class="form-field"><label class="input-label">좋아 1</label><input class="input" id="f-like1"></div>
+        <div class="form-field"><label class="input-label">좋아 2</label><input class="input" id="f-like2"></div>
+        <div class="form-field"><label class="input-label">좋아 3</label><input class="input" id="f-like3"></div>
+        <div class="form-field"><label class="input-label">좋아 4</label><input class="input" id="f-like4"></div>
+        <div class="form-field"><label class="input-label">싫어 1</label><input class="input" id="f-dislike1"></div>
+        <div class="form-field"><label class="input-label">싫어 2</label><input class="input" id="f-dislike2"></div>
+        <div class="form-field"><label class="input-label">싫어 3</label><input class="input" id="f-dislike3"></div>
+        <div class="form-field"><label class="input-label">싫어 4</label><input class="input" id="f-dislike4"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">방송 요일</span>
+      <div class="daybox" id="daybox"></div>
+      <div class="form-grid" style="margin-top:12px">
+        <div class="form-field"><label class="input-label">방송하는 날 표기</label><input class="input" id="f-day-label" placeholder="랜덤"><span class="hint">체크한 요일 칸에 들어갈 글자 (비우면 "랜덤")</span></div>
+        <div class="form-field"><label class="input-label">요일표 아래 안내문</label><input class="input" id="f-day-note" placeholder="주 1일 휴방 · 방송 시간은 랜덤입니다"></div>
+      </div>
+      <span class="hint" style="margin-top:8px">체크 = 방송, 체크 해제 = 휴방. 순서는 <b>월 → 일</b>입니다.</span>
+      <input type="hidden" id="f-days">
+    </div>
+
+    <div class="card">
+      <span class="card-title">채팅 규칙</span>
+      <div class="form-grid two" id="ruleBox"></div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">링크</span>
+      <div class="form-grid">
+        <div class="form-field"><label class="input-label">SOOP</label><input class="input" id="f-link-soop" placeholder="https://www.sooplive.com/station/jimang2"></div>
+        <div class="form-field"><label class="input-label">YouTube</label><input class="input" id="f-link-yt"></div>
+        <div class="form-field"><label class="input-label">X (트위터)</label><input class="input" id="f-link-x"></div>
+        <div class="form-field"><label class="input-label">디스코드</label><input class="input" id="f-link-discord"></div>
+        <div class="form-field"><label class="input-label">팬카페</label><input class="input" id="f-link-cafe"></div>
+        <div class="form-field"><label class="input-label">팬심</label><input class="input" id="f-link-fancim"></div>
+      </div>
+      <span class="hint" style="margin-top:8px">비워두면 버튼은 그대로 보이되 링크만 연결되지 않습니다.</span>
+      <div class="row-btns"><button class="btn btn-primary" onclick="saveProfile()">💾 프로필 저장</button></div>
+    </div>
+  </div>
+
+  <!-- ═════════ 🎀 프로필 ═════════ -->
+  <div class="tab-panel" id="tab-profile">
+    <div class="card">
+      <span class="card-title">어록 · TMI</span>
+      <div class="form-grid two">
+        <div class="form-field full"><label class="input-label">어록 / 인사말</label><textarea class="input" id="f-quote"></textarea><span class="hint">줄바꿈 반영. 프로필 "한마디" 카드 아래쪽에 들어갑니다</span></div>
+        <div class="form-field"><label class="input-label">성격</label><input class="input" id="f-tmi-mood" placeholder="밝음 · 귀여움 · 백치미"></div>
+        <div class="form-field"><label class="input-label">주력 게임</label><input class="input" id="f-tmi-game" placeholder="발로란트 · 마크 · 로아"></div>
+        <div class="form-field"><label class="input-label">좋아하는 음식</label><input class="input" id="f-tmi-food" placeholder="체리"></div>
+        <div class="form-field"><label class="input-label">애창곡</label><input class="input" id="f-tmi-song" placeholder="첫사랑"></div>
+        <div class="form-field full"><label class="input-label">기타 TMI</label><textarea class="input" id="f-tmi-etc"></textarea><span class="hint">줄바꿈 반영</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">능력치</span>
+      <div class="form-grid" id="statBox"></div>
+      <span class="hint" style="margin-top:8px">형식: <b>이름:숫자</b> (예 <code>텐션:95</code>) — 숫자는 0~100. 비우면 그 줄은 안 보입니다.</span>
+    </div>
+
+    <div class="card">
+      <span class="card-title">마일스톤</span>
+      <div class="form-grid" id="msBox"></div>
+      <span class="hint" style="margin-top:8px">형식: <b>상태|내용</b> (예 <code>달성|2023.02.07 데뷔 방송</code>) — 상태가 "달성"이면 배지가 마젠타로 바뀝니다.</span>
+      <div class="row-btns"><button class="btn btn-primary" onclick="saveProfile()">💾 프로필 저장</button></div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">다시보기 (VOD)</span>
+      <div class="form-grid two">
+        <div class="form-field"><label class="input-label">제목</label><input class="input" id="vod-title" placeholder="첫사랑 커버"></div>
+        <div class="form-field"><label class="input-label">VOD ID</label><input class="input" id="vod-id" placeholder="123456789">
+          <span class="hint">SOOP 다시보기 주소 <code>vod.sooplive.co.kr/player/<b>123456789</b></code> 의 숫자 부분만</span></div>
+      </div>
+      <div class="row-btns"><button class="btn btn-primary" onclick="addVod()">+ VOD 추가</button></div>
+      <div class="table-wrap" style="margin-top:12px"><table>
+        <thead><tr><th>제목</th><th>VOD ID</th><th>삭제</th></tr></thead>
+        <tbody id="vodBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ═════════ ✉ 공지 ═════════ -->
+  <div class="tab-panel" id="tab-notice">
+    <div class="card">
+      <span class="card-title">공지 등록</span>
+      <div class="form-grid two">
+        <div class="form-field"><label class="input-label">제목</label><input class="input" id="nt-title"></div>
+        <div class="form-field"><label class="input-label">이미지 주소 (선택)</label><input class="input" id="nt-img" placeholder="https://stimg.sooplive.com/...">
+          <span class="hint">SOOP 게시판에 올린 뒤 이미지 우클릭 → "이미지 주소 복사". 글 주소가 아니라 <b>이미지 주소</b>여야 합니다</span></div>
+        <div class="form-field full"><label class="input-label">내용</label><textarea class="input" id="nt-body"></textarea><span class="hint">줄바꿈 그대로 표시됩니다</span></div>
+        <div class="form-field"><label class="chk"><input type="checkbox" id="nt-pin">📌 맨 위 고정</label></div>
+      </div>
+      <div class="row-btns"><button class="btn btn-primary" onclick="addNotice()">+ 공지 등록</button></div>
+    </div>
+    <div class="card">
+      <span class="card-title">공지 목록</span>
+      <div class="table-wrap"><table>
+        <thead><tr><th>날짜</th><th>제목</th><th>고정</th><th>삭제</th></tr></thead>
+        <tbody id="ntBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ═════════ ▤ 일정 ═════════ -->
+  <div class="tab-panel" id="tab-schedule">
+    <div class="card">
+      <span class="card-title">일정 등록</span>
+      <div class="form-grid">
+        <div class="form-field"><label class="input-label">날짜</label><input class="input" id="sc-date" type="date"></div>
+        <div class="form-field"><label class="input-label">종류</label>
+          <select class="input" id="sc-type"><option>일반</option><option>특별</option><option>콜라보</option><option>휴방</option></select>
+          <span class="hint">"휴방"을 고르면 페이지에서 휴방으로 표시됩니다</span></div>
+        <div class="form-field"><label class="input-label">색</label>
+          <select class="input" id="sc-color">
+            <option value="green">초록</option><option value="pink">분홍</option><option value="yellow">노랑</option>
+            <option value="orange">주황</option><option value="blue">파랑</option><option value="purple">보라</option>
+            <option value="red">빨강</option><option value="gray">회색</option>
+          </select></div>
+        <div class="form-field"><label class="input-label">1부 시간</label><input class="input" id="sc-time" placeholder="21:00"></div>
+        <div class="form-field"><label class="input-label">1부 제목</label><input class="input" id="sc-title" placeholder="저챗"></div>
+        <div class="form-field"><label class="input-label">2부 시간 (선택)</label><input class="input" id="sc-time2" placeholder="23:00"></div>
+        <div class="form-field"><label class="input-label">2부 제목 (선택)</label><input class="input" id="sc-title2" placeholder="게임"></div>
+        <div class="form-field"><label class="chk"><input type="checkbox" id="sc-hl">✦ 강조 표시</label></div>
+        <div class="form-field full"><label class="input-label">설명 (선택)</label><textarea class="input" id="sc-desc"></textarea></div>
+      </div>
+      <div class="row-btns"><button class="btn btn-primary" onclick="addSchedule()">+ 일정 등록</button></div>
+    </div>
+    <div class="card">
+      <span class="card-title">일정 목록</span>
+      <div class="table-wrap"><table>
+        <thead><tr><th>날짜</th><th>제목</th><th>시간</th><th>종류</th><th>삭제</th></tr></thead>
+        <tbody id="scBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ═════════ ♡ 업보 ═════════ -->
+  <div class="tab-panel" id="tab-upbo">
+    <div class="card">
+      <span class="card-title">시청자</span>
+      <div class="form-grid">
+        <div class="form-field"><label class="input-label">닉네임</label><input class="input" id="vw-nick"></div>
+        <div class="form-field"><label class="input-label">SOOP 아이디 (선택)</label><input class="input" id="vw-id"><span class="hint">넣으면 SOOP 프사가 자동으로 걸립니다</span></div>
+      </div>
+      <div class="row-btns"><button class="btn btn-primary" onclick="addViewer()">+ 시청자 추가</button></div>
+      <div class="table-wrap" style="margin-top:12px"><table>
+        <thead><tr><th>닉네임</th><th>아이디</th><th>업보 합계</th><th>삭제</th></tr></thead>
+        <tbody id="vwBody"></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">업보 종류</span>
+      <div class="form-grid">
+        <div class="form-field"><label class="input-label">이름</label><input class="input" id="ut-name" placeholder="지각"></div>
+        <div class="form-field"><label class="input-label">분류</label>
+          <select class="input" id="ut-cat"><option>기본</option><option>상시</option><option>이벤트</option><option>듀오권</option></select>
+          <span class="hint">업보 페이지의 분류 탭과 같은 값입니다</span></div>
+      </div>
+      <div class="row-btns"><button class="btn btn-primary" onclick="addType()">+ 종류 추가</button></div>
+      <div class="table-wrap" style="margin-top:12px"><table>
+        <thead><tr><th>이름</th><th>분류</th><th>삭제</th></tr></thead>
+        <tbody id="utBody"></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <span class="card-title">업보 횟수 입력</span>
+      <div class="form-field" style="max-width:340px">
+        <label class="input-label">시청자 선택</label>
+        <select class="input" id="cnt-viewer" onchange="renderCounts()"></select>
+      </div>
+      <div id="cntBox" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <!-- ═════════ ♪ 노래 ═════════ -->
+  <div class="tab-panel" id="tab-song">
+    <div class="card">
+      <span class="card-title">노래 등록</span>
+      <div class="form-grid">
+        <div class="form-field"><label class="input-label">제목</label><input class="input" id="sg-title"></div>
+        <div class="form-field"><label class="input-label">아티스트</label><input class="input" id="sg-artist"></div>
+        <div class="form-field"><label class="input-label">장르</label>
+          <select class="input" id="sg-genre"></select>
+          <span class="hint">노래책 페이지의 장르 탭과 같은 값입니다</span></div>
+        <div class="form-field"><label class="input-label">난이도 (1~5)</label>
+          <select class="input" id="sg-diff"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+      </div>
+      <div class="row-btns"><button class="btn btn-primary" onclick="addSong()">+ 노래 등록</button></div>
+    </div>
+    <div class="card">
+      <span class="card-title">노래 목록</span>
+      <div class="table-wrap"><table>
+        <thead><tr><th>제목</th><th>아티스트</th><th>장르</th><th>난이도</th><th>삭제</th></tr></thead>
+        <tbody id="sgBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ═════════ 👗 옷장 ═════════ -->
+  <div class="tab-panel" id="tab-dress">
+    <div class="card">
+      <span class="card-title">옷 등록</span>
+      <div class="form-grid">
+        <div class="form-field"><label class="input-label">이름</label><input class="input" id="dr-name"></div>
+        <div class="form-field"><label class="input-label">분류</label><select class="input" id="dr-cat"></select></div>
+        <div class="form-field full"><label class="input-label">이미지 주소</label><input class="input" id="dr-img" placeholder="https://stimg.sooplive.com/...">
+          <span class="hint">세로 3:4 (900×1200) 권장. SOOP 게시판 업로드 후 이미지 우클릭 → "이미지 주소 복사"</span></div>
+        <div class="form-field full"><label class="input-label">설명 (선택)</label><input class="input" id="dr-desc"></div>
+        <div class="form-field"><label class="chk"><input type="checkbox" id="dr-new" checked>✨ 새 옷으로 올리기</label>
+          <span class="hint">체크하면 "새 옷(포스터)" 모드에, 해제하면 "기존 옷" 앨범에 들어갑니다. 나중에 언제든 바꿀 수 있어요</span></div>
+      </div>
+      <div class="row-btns"><button class="btn btn-primary" onclick="addDress()">+ 옷 등록</button></div>
+    </div>
+    <div class="card">
+      <span class="card-title">옷 목록</span>
+      <div class="table-wrap"><table>
+        <thead><tr><th>이름</th><th>분류</th><th>새 옷</th><th>삭제</th></tr></thead>
+        <tbody id="drBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ═════════ 🎮 미니게임 ═════════ -->
+  <div class="tab-panel" id="tab-minigame">
+    <div class="card">
+      <span class="card-title">룰렛 항목</span>
+      <div class="form-field">
+        <label class="input-label">항목 목록</label>
+        <textarea class="input" id="f-mg-roulette" placeholder="발로란트&#10;마인크래프트&#10;노래방송"></textarea>
+        <span class="hint">한 줄에 하나씩. 2개 이상 12개 이하로 넣어주세요 (비우면 기본 목록이 나옵니다)</span>
+      </div>
+      <div class="row-btns"><button class="btn btn-primary" onclick="saveProfile()">💾 저장</button></div>
+    </div>
+  </div>
+
+  <!-- ═════════ 💬 문의 ═════════ -->
+  <div class="tab-panel" id="tab-inquiry">
+    <div class="card">
+      <span class="card-title">받은 문의</span>
+      <div id="iqBox"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- ═════════ 🎨 테마 ═════════ -->
+  <div class="tab-panel" id="tab-theme">
+    <div class="card">
+      <span class="card-title">색 팔레트</span>
+      <div class="palette" id="palette"></div>
+      <div class="pal-prev" id="palPrev"></div>
+      <span class="hint" style="margin-top:10px">저장하면 <b>모든 페이지</b>에 바로 적용됩니다. 되돌리려면 "기본값으로"를 누르고 저장하세요.</span>
+      <div class="row-btns">
+        <button class="btn btn-primary" onclick="saveTheme()">💾 테마 저장</button>
+        <button class="btn" onclick="resetTheme()">기본값으로</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════ 로그인 ═══════════ */
+var ADMIN_PW = '1234';   /* ⚠️ 소스에 그대로 보입니다 — 버리는 비밀번호를 쓰세요 */
+function doLogin(){
+  if(document.getElementById('pw').value === ADMIN_PW){
+    sessionStorage.setItem('adm','1');
+    document.getElementById('login').style.display='none';
+    document.getElementById('ad').style.display='';
+    loadAll();
+  }else{
+    document.getElementById('loginErr').textContent='비밀번호가 틀렸어요';
+  }
+}
+if(sessionStorage.getItem('adm')==='1'){
+  document.getElementById('login').style.display='none';
+  document.getElementById('ad').style.display='';
+}
+
+/* ═══════════ 공통 ═══════════ */
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');
+  syncKnob();
+}
+function syncKnob(){
+  var d=document.body.classList.contains('dark');
+  document.querySelectorAll('.dk .knob').forEach(function(i){i.textContent=d?'☀':'☾'});
+}
+syncKnob();
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); },2200);
+}
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function setVal(id,v){ var e=document.getElementById(id); if(e) e.value=(v==null?'':v); }
+
+document.querySelectorAll('#tabs .tab-btn').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('#tabs .tab-btn').forEach(function(x){ x.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+    document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* ═══════════ 동적 입력칸 생성 (채팅규칙 · 능력치 · 마일스톤 · 요일) ═══════════ */
+var DAY_NAMES=['월','화','수','목','금','토','일'];   /* 0=월 … 6=일 — 페이지와 동일하게 강제 */
+(function(){
+  var rb=document.getElementById('ruleBox'), h='';
+  for(var i=1;i<=4;i++){
+    h+='<div class="form-field"><label class="input-label">규칙 '+i+' 제목</label><input class="input" id="f-rule'+i+'-title"></div>'+
+       '<div class="form-field"><label class="input-label">규칙 '+i+' 내용</label><input class="input" id="f-rule'+i+'-body"></div>';
+  }
+  rb.innerHTML=h;
+
+  var sb=document.getElementById('statBox'), s='';
+  for(var j=1;j<=5;j++) s+='<div class="form-field"><label class="input-label">능력치 '+j+'</label><input class="input" id="f-stat'+j+'" placeholder="텐션:95"></div>';
+  sb.innerHTML=s;
+
+  var mb=document.getElementById('msBox'), m='';
+  for(var k=1;k<=5;k++) m+='<div class="form-field"><label class="input-label">마일스톤 '+k+'</label><input class="input" id="f-ms'+k+'" placeholder="달성|데뷔 방송"></div>';
+  mb.innerHTML=m;
+
+  var db_=document.getElementById('daybox'), d='';
+  for(var n=0;n<7;n++) d+='<label>'+DAY_NAMES[n]+'<input type="checkbox" class="day-chk" value="'+n+'"></label>';
+  db_.innerHTML=d;
+})();
+
+/* ═══════════ profileKeys — 페이지가 읽는 키와 정확히 일치해야 한다 ═══════════
+   (3집합 일치: 이 배열 ↔ f-{키} 입력칸 ↔ 페이지 data-hook / 로더) */
+var profileKeys = [
+  'avatar','soop-id',
+  'info-name','info-en','info-catchphrase','info-gender','info-team','info-fandom',
+  'info-debut','info-birth','info-content','info-song','info-tags',
+  'hero-quote','main-art','main-story',
+  'like1','like2','like3','like4','dislike1','dislike2','dislike3','dislike4',
+  'days','day-label','day-note',
+  'rule1-title','rule1-body','rule2-title','rule2-body',
+  'rule3-title','rule3-body','rule4-title','rule4-body',
+  'link-soop','link-yt','link-x','link-discord','link-cafe','link-fancim',
+  'quote','tmi-mood','tmi-game','tmi-food','tmi-song','tmi-etc',
+  'stat1','stat2','stat3','stat4','stat5',
+  'ms1','ms2','ms3','ms4','ms5',
+  'mg-roulette'
+];
+var THEME_KEYS={'theme-main':'--main','theme-main-dark':'--main-dark','theme-main-deep':'--main-deep',
+                'theme-main-light':'--main-light','theme-bg':'--bg','theme-logo':'--logo'};
+var THEME_DEFAULT={'theme-main':'#e05fb4','theme-main-dark':'#6b3fa0','theme-main-deep':'#1b0f38',
+                   'theme-main-light':'#bca5fa','theme-bg':'#241344','theme-logo':'#1b0f38'};
+var THEME_LABEL={'theme-main':'메인 (포인트)','theme-main-dark':'메인 진한','theme-main-deep':'외곽선',
+                 'theme-main-light':'메인 연한','theme-bg':'배경','theme-logo':'로고'};
+
+var profileData = {};   /* 저장 시 통째로 되돌려써야 테마 키가 날아가지 않는다 */
+
+/* ═══════════ 로드 ═══════════ */
+async function loadAll(){
+  await loadProfile();
+  loadVod(); loadNotice(); loadSchedule(); loadUpbo(); loadSong(); loadDress(); loadInquiry();
+  buildPalette();
+}
+
+async function loadProfile(){
+  try{
+    var res = await db.from('profile').select('data').eq('id',1).single();
+    profileData = (res && res.data && res.data.data) || {};
+  }catch(e){ console.warn('profile load failed:', e); profileData={}; }
+  profileKeys.forEach(function(k){
+    var v=profileData[k];
+    if(Array.isArray(v)) v=v.join('\n');
+    else if(v && typeof v==='object') v=JSON.stringify(v);
+    setVal('f-'+k, v==null?'':v);
+  });
+  var on=String(profileData['days']||'').split(',').map(function(x){ return x.trim(); });
+  document.querySelectorAll('.day-chk').forEach(function(c){ c.checked = on.indexOf(c.value)>-1; });
+}
+
+async function saveProfile(){
+  profileKeys.forEach(function(k){
+    if(k==='days') return;
+    var e=document.getElementById('f-'+k);
+    if(e) profileData[k]=e.value.trim();
+  });
+  var days=[];
+  document.querySelectorAll('.day-chk').forEach(function(c){ if(c.checked) days.push(c.value); });
+  profileData['days']=days.join(',');
+  var ok=await saveProfileData();
+  toast(ok?'저장했어요 💜':'저장 실패 — 잠시 후 다시 시도해 주세요');
+}
+async function saveProfileData(){
+  try{
+    var r = await db.from('profile').upsert({ id:1, data:profileData }).select();
+    return !r.error;
+  }catch(e){ console.warn(e); return false; }
+}
+
+/* ═══════════ 🎨 테마 ═══════════ */
+function buildPalette(){
+  var box=document.getElementById('palette'), h='';
+  Object.keys(THEME_KEYS).forEach(function(k){
+    var v=profileData[k]||THEME_DEFAULT[k];
+    h+='<div class="pal-row"><span class="pn">'+THEME_LABEL[k]+'</span>'+
+       '<input type="color" id="c-'+k+'" value="'+v+'" oninput="syncHex(\''+k+'\')">'+
+       '<input class="input" id="h-'+k+'" value="'+v+'" oninput="syncColor(\''+k+'\')"></div>';
+  });
+  box.innerHTML=h;
+  previewTheme();
+}
+function syncHex(k){ document.getElementById('h-'+k).value=document.getElementById('c-'+k).value; previewTheme(); }
+function syncColor(k){
+  var v=document.getElementById('h-'+k).value.trim();
+  if(/^#[0-9a-fA-F]{6}$/.test(v)){ document.getElementById('c-'+k).value=v; previewTheme(); }
+}
+function previewTheme(){
+  var prev='';
+  Object.keys(THEME_KEYS).forEach(function(k){
+    var v=document.getElementById('c-'+k).value;
+    document.documentElement.style.setProperty(THEME_KEYS[k], v);
+    prev+='<i style="background:'+v+'"></i>';
+  });
+  document.getElementById('palPrev').innerHTML=prev;
+}
+async function saveTheme(){
+  Object.keys(THEME_KEYS).forEach(function(k){ profileData[k]=document.getElementById('c-'+k).value; });
+  var ok=await saveProfileData();
+  toast(ok?'테마를 저장했어요 🎨':'저장 실패');
+}
+function resetTheme(){
+  Object.keys(THEME_KEYS).forEach(function(k){
+    document.getElementById('c-'+k).value=THEME_DEFAULT[k];
+    document.getElementById('h-'+k).value=THEME_DEFAULT[k];
+  });
+  previewTheme();
+  toast('기본값으로 되돌렸어요 — 저장을 눌러야 반영됩니다');
+}
+
+/* ═══════════ 다시보기 (VOD) ═══════════ */
+async function loadVod(){
+  var rows=[];
+  try{ rows = await fetchAll('original_songs',{ order:'id', asc:false }) || []; }catch(e){}
+  document.getElementById('vodBody').innerHTML = rows.length ? rows.map(function(r){
+    return '<tr><td>'+esc(r.title)+'</td><td>'+esc(r.vod_id)+'</td>'+
+      '<td><button class="del" onclick="delRow(\'original_songs\','+r.id+',loadVod)">✕</button></td></tr>';
+  }).join('') : '<tr><td colspan="3">등록된 VOD가 없어요</td></tr>';
+}
+async function addVod(){
+  var t=val('vod-title'), v=val('vod-id');
+  if(!t||!v){ alert('제목과 VOD ID를 모두 넣어주세요'); return; }
+  var ok=await insertRow('original_songs',{ title:t, vod_id:v });
+  if(ok){ setVal('vod-title',''); setVal('vod-id',''); loadVod(); toast('추가했어요'); } else toast('추가 실패');
+}
+
+/* ═══════════ 공지 ═══════════ */
+async function loadNotice(){
+  var rows=[];
+  try{ rows = await fetchAll('notice',{ order:'created_at', asc:false }) || []; }catch(e){}
+  document.getElementById('ntBody').innerHTML = rows.length ? rows.map(function(r){
+    return '<tr><td>'+String(r.created_at||'').slice(0,10)+'</td><td>'+esc(r.title)+'</td>'+
+      '<td>'+(r.pinned?'📌':'')+'</td>'+
+      '<td><button class="del" onclick="delRow(\'notice\','+r.id+',loadNotice)">✕</button></td></tr>';
+  }).join('') : '<tr><td colspan="4">등록된 공지가 없어요</td></tr>';
+}
+async function addNotice(){
+  var t=val('nt-title');
+  if(!t){ alert('제목을 넣어주세요'); return; }
+  var img=val('nt-img');
+  var row={ title:t, content:val('nt-body'), pinned:document.getElementById('nt-pin').checked };
+  if(img) row.image_url=img;
+  var ok=await insertRow('notice',row);
+  if(ok){ setVal('nt-title',''); setVal('nt-body',''); setVal('nt-img','');
+    document.getElementById('nt-pin').checked=false; loadNotice(); toast('등록했어요'); } else toast('등록 실패');
+}
+
+/* ═══════════ 일정 ═══════════ */
+async function loadSchedule(){
+  var rows=[];
+  try{ rows = await fetchAll('schedule',{ order:'date', asc:false }) || []; }catch(e){}
+  document.getElementById('scBody').innerHTML = rows.length ? rows.map(function(r){
+    var times=[r.time,r.time2].filter(Boolean).join(' · ');
+    return '<tr><td>'+esc(r.date)+'</td><td>'+esc(r.title)+'</td><td>'+esc(times)+'</td><td>'+esc(r.type)+'</td>'+
+      '<td><button class="del" onclick="delRow(\'schedule\','+r.id+',loadSchedule)">✕</button></td></tr>';
+  }).join('') : '<tr><td colspan="5">등록된 일정이 없어요</td></tr>';
+}
+async function addSchedule(){
+  var d=val('sc-date');
+  if(!d){ alert('날짜를 골라주세요'); return; }
+  var type=val('sc-type');
+  var ok=await insertRow('schedule',{
+    date:d, title:val('sc-title')||(type==='휴방'?'휴방':'방송'), time:val('sc-time'),
+    time2:val('sc-time2'), title2:val('sc-title2'), type:type, color:val('sc-color'),
+    highlight:document.getElementById('sc-hl').checked, description:val('sc-desc')
+  });
+  if(ok){ ['sc-title','sc-time','sc-time2','sc-title2','sc-desc'].forEach(function(i){ setVal(i,''); });
+    document.getElementById('sc-hl').checked=false; loadSchedule(); toast('등록했어요'); } else toast('등록 실패');
+}
+
+/* ═══════════ 업보 ═══════════ */
+var viewers=[], types=[], counts=[];
+async function loadUpbo(){
+  try{
+    var r=await Promise.all([
+      fetchAll('viewers',{ order:'sort_order', asc:true }),
+      fetchAll('upbo_types',{ order:'sort_order', asc:true }),
+      fetchAll('upbo_counts',{ order:'id', asc:true })
+    ]);
+    viewers=r[0]||[]; types=r[1]||[]; counts=r[2]||[];
+  }catch(e){ viewers=[]; types=[]; counts=[]; }
+
+  document.getElementById('vwBody').innerHTML = viewers.length ? viewers.map(function(v){
+    var total=counts.filter(function(c){ return c.viewer_id===v.id; }).reduce(function(s,c){ return s+(c.count||0); },0);
+    return '<tr><td>'+esc(v.nickname)+'</td><td>'+esc(v.soop_id||'-')+'</td><td>'+total+'</td>'+
+      '<td><button class="del" onclick="delRow(\'viewers\','+v.id+',loadUpbo)">✕</button></td></tr>';
+  }).join('') : '<tr><td colspan="4">등록된 시청자가 없어요</td></tr>';
+
+  document.getElementById('utBody').innerHTML = types.length ? types.map(function(t){
+    return '<tr><td>'+esc(t.name)+'</td><td>'+esc(t.category)+'</td>'+
+      '<td><button class="del" onclick="delRow(\'upbo_types\','+t.id+',loadUpbo)">✕</button></td></tr>';
+  }).join('') : '<tr><td colspan="3">등록된 종류가 없어요</td></tr>';
+
+  var sel=document.getElementById('cnt-viewer'), cur=sel.value;
+  sel.innerHTML = viewers.map(function(v){ return '<option value="'+v.id+'">'+esc(v.nickname)+'</option>'; }).join('');
+  if(cur) sel.value=cur;
+  renderCounts();
+}
+function renderCounts(){
+  var vid=+document.getElementById('cnt-viewer').value;
+  var box=document.getElementById('cntBox');
+  if(!vid||!types.length){ box.innerHTML='<div class="empty">시청자와 업보 종류를 먼저 등록해 주세요</div>'; return; }
+  var mine={};
+  counts.filter(function(c){ return c.viewer_id===vid; }).forEach(function(c){ mine[c.type_id]=c.count; });
+  box.innerHTML='<div class="form-grid">'+types.map(function(t){
+    return '<div class="form-field"><label class="input-label">'+esc(t.name)+' <span style="color:var(--text-soft)">('+esc(t.category)+')</span></label>'+
+      '<input class="input" type="number" min="0" id="cn-'+t.id+'" value="'+(mine[t.id]||0)+'"></div>';
+  }).join('')+'</div><div class="row-btns"><button class="btn btn-primary" onclick="saveCounts()">💾 횟수 저장</button></div>';
+}
+async function saveCounts(){
+  var vid=+document.getElementById('cnt-viewer').value;
+  var rows=types.map(function(t){
+    return { viewer_id:vid, type_id:t.id, count:parseInt(val('cn-'+t.id),10)||0, updated_at:new Date().toISOString() };
+  });
+  try{
+    var r=await db.from('upbo_counts').upsert(rows,{ onConflict:'viewer_id,type_id' }).select();
+    toast(r.error?'저장 실패':'저장했어요 💜');
+  }catch(e){ toast('저장 실패'); }
+  loadUpbo();
+}
+async function addViewer(){
+  var n=val('vw-nick');
+  if(!n){ alert('닉네임을 넣어주세요'); return; }
+  var ok=await insertRow('viewers',{ nickname:n, soop_id:val('vw-id'), sort_order:viewers.length+1 });
+  if(ok){ setVal('vw-nick',''); setVal('vw-id',''); loadUpbo(); toast('추가했어요'); } else toast('추가 실패');
+}
+async function addType(){
+  var n=val('ut-name');
+  if(!n){ alert('이름을 넣어주세요'); return; }
+  var ok=await insertRow('upbo_types',{ name:n, category:val('ut-cat'), sort_order:types.length+1 });
+  if(ok){ setVal('ut-name',''); loadUpbo(); toast('추가했어요'); } else toast('추가 실패');
+}
+
+/* ═══════════ 노래 ═══════════ */
+/* ⚠️ 노래책 페이지의 GENRES 와 같은 값 (전체 제외) */
+var SONG_GENRES=['발라드','K-Pop','J-Pop','Pop','애니','기타'];
+document.getElementById('sg-genre').innerHTML=SONG_GENRES.map(function(g){ return '<option>'+g+'</option>'; }).join('');
+async function loadSong(){
+  var rows=[];
+  try{ rows = await fetchAll('songs',{ order:'id', asc:true }) || []; }catch(e){}
+  document.getElementById('sgBody').innerHTML = rows.length ? rows.map(function(r){
+    return '<tr><td>'+esc(r.title)+'</td><td>'+esc(r.artist||'-')+'</td><td>'+esc(r.genre||'-')+'</td>'+
+      '<td>'+(r.difficulty||0)+'</td>'+
+      '<td><button class="del" onclick="delRow(\'songs\','+r.id+',loadSong)">✕</button></td></tr>';
+  }).join('') : '<tr><td colspan="5">등록된 노래가 없어요</td></tr>';
+}
+async function addSong(){
+  var t=val('sg-title');
+  if(!t){ alert('제목을 넣어주세요'); return; }
+  var ok=await insertRow('songs',{ title:t, artist:val('sg-artist'), genre:val('sg-genre'),
+    difficulty:parseInt(val('sg-diff'),10)||3 });
+  if(ok){ setVal('sg-title',''); setVal('sg-artist',''); loadSong(); toast('등록했어요'); } else toast('등록 실패');
+}
+
+/* ═══════════ 옷장 ═══════════ */
+/* ⚠️ 옷장 페이지의 CATS 와 같은 값 (3곳 동기화: 페이지 CATS / 이 select / DRESS_CATS) */
+var DRESS_CATS=[{key:'hair',label:'헤어'},{key:'outfit',label:'의상'},{key:'lens',label:'렌즈'}];
+document.getElementById('dr-cat').innerHTML=DRESS_CATS.map(function(c){
+  return '<option value="'+c.key+'">'+c.label+'</option>'; }).join('');
+function drLabel(k){ var f=DRESS_CATS.filter(function(c){ return c.key===k; })[0]; return f?f.label:k; }
+async function loadDress(){
+  var rows=[];
+  try{
+    var r=await db.from('dress_items').select('*').order('sort_order').order('created_at');
+    rows=(r&&r.data)||[];
+  }catch(e){}
+  document.getElementById('drBody').innerHTML = rows.length ? rows.map(function(d){
+    var isNew=(d.badges||[]).some(function(b){
+      var l=(b&&(b.label!=null?b.label:b))||''; return String(l).trim().toUpperCase()==='NEW'; });
+    return '<tr><td>'+esc(d.name)+'</td><td>'+esc(drLabel(d.category))+'</td><td>'+(isNew?'✨':'')+'</td>'+
+      '<td><button class="del" onclick="delRow(\'dress_items\','+d.id+',loadDress)">✕</button></td></tr>';
+  }).join('') : '<tr><td colspan="4">등록된 옷이 없어요</td></tr>';
+}
+async function addDress(){
+  var n=val('dr-name');
+  if(!n){ alert('이름을 넣어주세요'); return; }
+  var ok=await insertRow('dress_items',{
+    name:n, category:val('dr-cat'), image_url:val('dr-img'), description:val('dr-desc'),
+    badges: document.getElementById('dr-new').checked ? ['NEW'] : []
+  });
+  if(ok){ setVal('dr-name',''); setVal('dr-img',''); setVal('dr-desc',''); loadDress(); toast('등록했어요'); } else toast('등록 실패');
+}
+
+/* ═══════════ 문의 ═══════════ */
+async function loadInquiry(){
+  var rows=[];
+  try{ rows = await fetchAll('inquiries',{ order:'created_at', asc:false }) || []; }catch(e){}
+  var box=document.getElementById('iqBox');
+  box.innerHTML = rows.length ? rows.map(function(q){
+    return '<div class="iq-item"><div><div class="iq-meta">'+String(q.created_at||'').slice(0,16).replace('T',' ')+
+      (q.nickname?' · '+esc(q.nickname):'')+'</div><div class="iq-msg">'+esc(q.message)+'</div></div>'+
+      '<button class="del" onclick="delRow(\'inquiries\','+q.id+',loadInquiry)">✕</button></div>';
+  }).join('') : '<div class="empty"><span class="empty-icon">💬</span>받은 문의가 없어요</div>';
+}
+
+/* ═══════════ 삭제 공통 ═══════════ */
+async function delRow(table,id,after){
+  if(!confirm('정말 삭제할까요? 되돌릴 수 없어요.')) return;
+  var ok=await deleteRow(table,id);
+  toast(ok?'삭제했어요':'삭제 실패');
+  if(after) after();
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../supabase.js"></script>
+<script>
+if(sessionStorage.getItem('adm')==='1') loadAll();
+document.body.classList.add('ready');
+</script>
+</body>
+</html>

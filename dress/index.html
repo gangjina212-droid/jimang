@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>옷장 — 지망ノ</title>
+<meta property="og:title" content="지망ノ · 옷장">
+<meta property="og:image" content="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+
+.dress-sub{font-size:14.5px;color:var(--text-soft);margin-bottom:12px;line-height:1.7}
+.mode-seg{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.seg-btn{padding:10px 16px;border:3px solid var(--ink);background:#fff;color:var(--ink);
+  font-size:15px;font-weight:800;box-shadow:3px 3px 0 var(--lilac);transition:var(--transition)}
+body.dark .seg-btn{background:#31215c;color:#f4ecff}
+.seg-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--magenta)}
+.seg-btn.active{background:var(--magenta);color:#fff;box-shadow:3px 3px 0 var(--ink)}
+.cat-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.cat-tab{padding:7px 13px;border:3px solid var(--ink);background:#fff;color:var(--ink);
+  font-size:14px;font-weight:800;box-shadow:2px 2px 0 var(--lilac);transition:var(--transition)}
+body.dark .cat-tab{background:#31215c;color:#f4ecff}
+.cat-tab.active{background:var(--main-dark);color:#fff;box-shadow:2px 2px 0 var(--ink)}
+body.dark .cat-tab.active{color:#1b0f38}
+.cat-tab .cnt{font-family:var(--f-mono);font-size:12.5px;opacity:.85}
+
+/* ── 기존 옷 = 앨범 그리드 ── */
+.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.item-card{position:relative;border:3px solid var(--ink);background:#fff;overflow:hidden;cursor:pointer;
+  box-shadow:4px 4px 0 var(--lilac);transition:var(--transition)}
+body.dark .item-card{background:#31215c}
+.item-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--magenta)}
+.item-card img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.item-card .ph{display:grid;place-items:center;aspect-ratio:3/4;font-size:40px;background:var(--lilac)}
+.item-card .zoom-hint{position:absolute;right:8px;top:8px;z-index:3;width:26px;height:26px;
+  display:grid;place-items:center;font-size:13px;border:2px solid var(--ink);background:var(--gold);color:var(--ink)}
+.item-cap{padding:9px 11px;border-top:3px solid var(--ink)}
+.item-cap .name{font-size:14.5px;font-weight:800}
+.item-cap .desc{font-size:13px;color:var(--text-soft);line-height:1.6}
+
+/* ── 새 옷 = 포스터 벽 ── */
+.poster-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  border-bottom:3px solid var(--ink);padding-bottom:8px;margin-bottom:14px}
+.poster-head .ph-t{font-family:var(--f-serif);font-weight:900;font-size:21px;letter-spacing:2px}
+.poster-head .ph-m{font-family:var(--f-mono);font-size:13px;color:var(--magenta);font-weight:700}
+.poster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.poster{position:relative;border:4px solid var(--ink);overflow:hidden;cursor:pointer;aspect-ratio:3/4;
+  background:linear-gradient(180deg,#1b0f38 0 22%,#4a2a86 22% 44%,#8a4bb4 44% 66%,#e07fc4 66% 100%);
+  box-shadow:6px 6px 0 rgba(224,95,180,.5);transition:var(--transition)}
+.poster:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 rgba(224,95,180,.6)}
+.poster img{width:100%;height:100%;object-fit:cover;filter:saturate(1.2) contrast(1.05)}
+.poster .ph-ph{position:absolute;inset:0;display:grid;place-items:center;font-size:52px}
+.poster .frame{position:absolute;inset:9px;border:2px solid rgba(255,217,138,.8);pointer-events:none;z-index:3}
+.poster .p-top{position:absolute;left:0;right:0;top:0;z-index:4;display:flex;justify-content:space-between;
+  align-items:center;padding:9px 12px;font-family:var(--f-mono);font-size:12.5px;font-weight:700;
+  color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.7)}
+.poster .p-new{border:2px solid var(--ink);background:var(--gold);color:var(--ink);padding:0 7px}
+.poster .p-bottom{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:12px;
+  background:linear-gradient(180deg,rgba(27,15,56,0),rgba(27,15,56,.92) 45%);color:#fff}
+.poster .p-cat{display:inline-block;font-size:12.5px;font-weight:800;border:2px solid var(--ink);
+  background:var(--magenta);color:#fff;padding:0 8px}
+.poster .p-line{height:3px;background:var(--pink);margin:7px 0}
+.poster .p-name{font-family:var(--f-serif);font-weight:900;font-size:18px;line-height:1.3}
+.poster .p-meta{font-family:var(--f-mono);font-size:12.5px;color:var(--gold)}
+.poster .p-desc{font-size:13px;color:#e9d9ff;line-height:1.55;margin-top:3px}
+
+.dress-pager{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin-top:16px}
+.dress-pager .pg{min-width:36px;height:36px;border:3px solid var(--ink);background:#fff;color:var(--ink);
+  font-size:14px;font-weight:800;box-shadow:2px 2px 0 var(--lilac)}
+body.dark .dress-pager .pg{background:#31215c;color:#f4ecff}
+.dress-pager .pg.active,.dress-pager .pg:hover{background:var(--magenta);color:#fff;box-shadow:2px 2px 0 var(--ink)}
+
+/* ── 확대 보기 ── */
+.lightbox{position:fixed;inset:0;background:rgba(20,10,41,.88);display:none;place-items:center;z-index:210;padding:20px}
+.lightbox.open{display:grid}
+.lightbox .inner{max-width:min(520px,92vw);width:100%;border:5px solid var(--ink);background:var(--cream);
+  box-shadow:10px 10px 0 var(--magenta)}
+.lightbox img{width:100%;max-height:70vh;object-fit:contain;background:var(--ink)}
+.lightbox-cap{padding:12px 16px;border-top:4px solid var(--ink)}
+.lightbox-cap .lb-name{font-family:var(--f-serif);font-weight:900;font-size:19px;color:var(--text)}
+.lightbox-cap .lb-desc{font-size:14px;color:var(--text-soft);line-height:1.65}
+.lightbox-close{position:fixed;right:18px;top:14px;z-index:212;width:40px;height:40px;display:grid;
+  place-items:center;font-size:24px;font-weight:800;cursor:pointer;
+  border:3px solid var(--ink);background:var(--gold);color:var(--ink)}
+@media(max-width:560px){
+  .item-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .poster-grid{grid-template-columns:1fr;gap:12px}
+  .poster .p-name{font-size:17px}
+}
+
+</style>
+</head>
+<body>
+<script>if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark');</script>
+<div id="fx"></div>
+
+<div class="grid">
+  <aside class="side">
+    <div class="s-av" id="avatarWrap"><div class="ring"></div>
+      <img class="avatar avi" id="avatar" src="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg" referrerpolicy="no-referrer" alt="지망ノ"></div>
+    <div class="s-logo"><b>지망ノ</b><span>ジマン · RUSH</span></div>
+    <nav class="s-menu">
+      <a href="../" class="sm">☾ 홈</a>
+      <a href="../profile/" class="sm">✧ 프로필</a>
+      <a href="../notice/" class="sm">✉ 공지</a>
+      <a href="../schedule/" class="sm">▤ 일정</a>
+      <a href="../work/" class="sm">♡ 업보</a>
+      <a href="../song/" class="sm">♪ 노래책</a>
+      <a href="../dress/" class="sm on">✂ 옷장</a>
+      <a href="../minigame/" class="sm">✦ 미니게임</a>
+    </nav>
+    <div class="s-h">T A G S</div>
+    <div class="s-tags"><span class="tag">#시티팝</span><span class="tag">#첫사랑</span><span class="tag">#보라</span></div>
+    <div class="s-util"><a class="ask" href="#" onclick="openAsk();return false">문의</a>
+      <div class="dk" onclick="toggleDark()"><i class="knob"></i></div></div>
+  </aside>
+
+  <main class="page">
+   <div class="container stagger">
+    <div class="pagehero">
+      <div class="ph-left">SIDE B · TRACK 07<br><b>DRESS</b><br>1st PRESS</div>
+      <div class="ph-center">
+        <div class="ph-title">옷장</div>
+        <div class="ph-line"></div>
+        <div class="ph-sub">👗 지망ノ의 코스튬 컬렉션</div>
+      </div>
+      <div class="ph-meta">JIMANG<br><b>DRESS ROOM</b><br>NEW LOOKS INSIDE</div>
+    </div>
+    <div class="card">
+      <span class="card-title">DRESS ROOM</span>
+      <div class="dress-sub">새로 올린 옷은 <b>포스터</b>로, 이미 올린 옷은 <b>기존 옷</b>에서 볼 수 있어요. 이미지를 누르면 크게 보여요.</div>
+      <div class="mode-seg" id="mode-seg">
+        <button class="seg-btn active" data-mode="new">✨ 새 옷 (포스터)</button>
+        <button class="seg-btn" data-mode="old">🗂 기존 옷</button>
+      </div>
+      <div class="cat-tabs" id="cat-tabs"></div>
+      <div id="dress-body"><div class="spinner"></div></div>
+    </div>
+
+    <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLb()">
+      <span class="lightbox-close" onclick="closeLb()">×</span>
+      <div class="inner">
+        <img id="lb-img" src="" alt="">
+        <div class="lightbox-cap">
+          <div class="lb-name" id="lb-name"></div>
+          <div class="lb-desc" id="lb-desc"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>© 2026 지망ノ Official.<br>비즈니스 문의 — 문의 버튼을 이용해 주세요</footer>
+   </div>
+  </main>
+</div>
+
+<div class="askmask" id="askmask" onclick="if(event.target===this)closeAsk()">
+  <div class="askmodal">
+    <h3>문의하기</h3>
+    <p>남겨주신 내용은 관리자만 볼 수 있어요.</p>
+    <input class="input" id="askNick" placeholder="닉네임 (선택)" style="margin-bottom:9px">
+    <textarea id="askmsg" placeholder="문의 내용을 적어주세요!"></textarea>
+    <div class="askbtns"><button class="no" onclick="closeAsk()">닫기</button><button class="yes" onclick="sendAsk()">보내기</button></div>
+  </div>
+</div>
+
+<script>
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');
+  syncKnob();
+}
+function syncKnob(){
+  var d=document.body.classList.contains('dark');
+  document.querySelectorAll('.dk .knob').forEach(function(i){i.textContent=d?'☀':'☾'});
+}
+syncKnob();
+function openAsk(){document.getElementById('askmask').classList.add('on')}
+function closeAsk(){document.getElementById('askmask').classList.remove('on')}
+async function sendAsk(){
+  var t=document.getElementById('askmsg').value.trim();
+  if(!t){alert('내용을 입력해 주세요!');return}
+  var nick=document.getElementById('askNick').value.trim();
+  var ok=false;
+  try{ ok = await insertRow('inquiries',{ nickname:nick||null, message:t }); }catch(e){ ok=false; }
+  if(ok){ alert('문의가 전송되었습니다! 💜');
+    document.getElementById('askmsg').value=''; document.getElementById('askNick').value=''; closeAsk(); }
+  else  { alert('전송에 실패했어요. 잠시 후 다시 시도해 주세요.'); }
+}
+function ready(){ document.body.classList.add('ready'); }
+setTimeout(ready,1600);   /* FOUC 폴백 — DB가 느리거나 오프라인이어도 화면은 뜬다 */
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../supabase.js"></script>
+<script>
+/* 아바타는 admin의 avatar > soop-id 순으로 (사이드바는 전 페이지 공통) */
+(async function(){
+  try{
+    var res = await db.from('profile').select('data').eq('id',1).single();
+    var p=(res&&res.data&&res.data.data)||{};
+    var av=document.getElementById('avatar');
+    if(p['avatar']) av.src=String(p['avatar']);
+    else if(p['soop-id']){ var id=String(p['soop-id']);
+      av.src='https://profile.img.sooplive.co.kr/LOGO/'+id.slice(0,2)+'/'+id+'/'+id+'.jpg'; }
+  }catch(e){}
+})();
+</script>
+<script>
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(s){ try{ var d=new Date(s); if(isNaN(d)) return '';
+  return String(d.getFullYear()).slice(2)+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
+}catch(e){ return ''; } }
+
+/* ⚠️ 분류는 3곳이 항상 같은 값이어야 한다: 이 CATS / admin <select id="dr-cat"> / admin DRESS_CATS */
+var CATS = [ {key:'hair',label:'헤어'}, {key:'outfit',label:'의상'}, {key:'lens',label:'렌즈'} ];
+var LABELS = {}; CATS.forEach(function(c){ LABELS[c.key]=c.label; });
+var PER_PAGE = 9;
+
+/* 새 옷 / 기존 옷 = admin "✨ 새 옷으로 올리기" 체크 → badges에 NEW */
+function isNew(it){
+  return (it.badges||[]).some(function(b){
+    var label=(b && (b.label!=null?b.label:b))||'';
+    return String(label).trim().toUpperCase()==='NEW';
+  });
+}
+
+var allItems=[], curCat=CATS[0].key, curMode='new', curPage=1;
+
+async function load(){
+  try{
+    var r = await db.from('dress_items').select('*').order('sort_order').order('created_at');
+    allItems = (r && r.data) || [];
+  }catch(e){ console.warn('dress load failed:', e); allItems=[]; }
+  document.querySelectorAll('#mode-seg .seg-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      curMode=btn.dataset.mode; curPage=1;
+      document.querySelectorAll('#mode-seg .seg-btn').forEach(function(b){
+        b.classList.toggle('active', b.dataset.mode===curMode); });
+      buildTabs(); render();
+    });
+  });
+  buildTabs(); render();
+  try{ if(typeof initIframeResize==='function') initIframeResize(); }catch(e){}
+  ready();
+}
+
+function viewItems(){
+  if(curMode==='new'){
+    return allItems.filter(function(i){ return i.category===curCat && isNew(i); })
+      .slice().sort(function(a,b){ return new Date(b.created_at||0)-new Date(a.created_at||0); });
+  }
+  return allItems.filter(function(i){ return i.category===curCat && !isNew(i); });
+}
+
+function buildTabs(){
+  var wrap=document.getElementById('cat-tabs'); wrap.innerHTML='';
+  CATS.forEach(function(c){
+    var cnt=allItems.filter(function(i){
+      return i.category===c.key && (curMode==='new'?isNew(i):!isNew(i)); }).length;
+    var b=document.createElement('button');
+    b.className='cat-tab'+(c.key===curCat?' active':'');
+    b.dataset.cat=c.key;
+    b.innerHTML=esc(c.label)+' <span class="cnt">'+cnt+'</span>';
+    b.onclick=function(){ curCat=c.key; curPage=1; buildTabs(); render(); };
+    wrap.appendChild(b);
+  });
+}
+
+function gridHTML(items){
+  return '<div class="item-grid">'+items.map(function(item,idx){
+    var hasImg=!!item.image_url;
+    var inner=hasImg
+      ? '<img src="'+esc(item.image_url)+'" alt="'+esc(item.name)+'" referrerpolicy="no-referrer" loading="lazy">'
+      : '<span class="ph">👗</span>';
+    return '<div class="item-card'+(hasImg?'':' no-img')+'" data-idx="'+idx+'">'+
+      (hasImg?'<div class="zoom-hint">⤢</div>':'')+inner+
+      '<div class="item-cap"><div class="name">'+esc(item.name)+'</div>'+
+      (item.description?'<div class="desc">'+esc(item.description)+'</div>':'')+
+      '</div></div>';
+  }).join('')+'</div>';
+}
+
+function posterHTML(items){
+  return '<div class="poster-head"><div class="ph-t">NEW LOOKS</div>'+
+    '<div class="ph-m">지망ノ · '+esc(LABELS[curCat]||'')+'</div></div>'+
+    '<div class="poster-grid">'+items.map(function(it,idx){
+      var img=it.image_url
+        ? '<img src="'+esc(it.image_url)+'" alt="'+esc(it.name)+'" referrerpolicy="no-referrer" loading="lazy">'
+        : '<span class="ph-ph">👗</span>';
+      var cat=(it.category&&LABELS[it.category])?'<span class="p-cat">'+esc(LABELS[it.category])+'</span>':'';
+      var date=it.created_at?'<span class="p-date">'+fmtDate(it.created_at)+'</span>':'';
+      return '<div class="poster'+(it.image_url?'':' no-img')+'" data-idx="'+idx+'">'+img+
+        '<div class="frame"></div>'+
+        '<div class="p-top"><span class="p-brand">지망ノ</span><span class="p-new">✦ NEW</span></div>'+
+        '<div class="p-bottom">'+cat+'<div class="p-line"></div>'+
+        '<div class="p-name">'+esc(it.name)+'</div>'+
+        (date?'<div class="p-meta">'+date+'</div>':'')+
+        (it.description?'<div class="p-desc">'+esc(it.description)+'</div>':'')+
+        '</div></div>';
+    }).join('')+'</div>';
+}
+
+function render(){
+  var body=document.getElementById('dress-body');
+  document.getElementById('cat-tabs').style.display='flex';
+  var items=viewItems();
+  if(!items.length){
+    body.innerHTML = (curMode==='new')
+      ? '<div class="empty"><span class="empty-icon">✨</span>'+(LABELS[curCat]||'')+' 새 옷이 아직 없어요<br>'+
+        '<span style="font-size:12.5px;opacity:.85">admin에서 옷을 추가할 때 "✨ 새 옷으로 올리기"를 체크하면 여기 포스터로 떠요</span></div>'
+      : '<div class="empty"><span class="empty-icon">👗</span>'+(LABELS[curCat]||'')+' 항목이 아직 없어요</div>';
+    return;
+  }
+  var total=Math.max(1, Math.ceil(items.length/PER_PAGE));
+  if(curPage>total) curPage=1;
+  var pageItems=items.slice((curPage-1)*PER_PAGE, curPage*PER_PAGE);
+  var pager='';
+  if(total>1){
+    pager='<div class="dress-pager">';
+    for(var i=1;i<=total;i++) pager+='<button class="pg'+(i===curPage?' active':'')+'" data-pg="'+i+'">'+i+'</button>';
+    pager+='</div>';
+  }
+  body.innerHTML=((curMode==='new')?posterHTML(pageItems):gridHTML(pageItems))+pager;
+  body.querySelectorAll('[data-idx]').forEach(function(el){
+    el.addEventListener('click', function(){
+      var it=pageItems[+el.dataset.idx];
+      if(it && it.image_url) openLb(it);
+    });
+  });
+  body.querySelectorAll('.pg').forEach(function(btn){
+    btn.addEventListener('click', function(){ curPage=+btn.dataset.pg; render(); window.scrollTo(0,0); });
+  });
+}
+
+function openLb(item){
+  document.getElementById('lb-img').src=item.image_url;
+  document.getElementById('lb-name').textContent=item.name||'';
+  var d=document.getElementById('lb-desc');
+  d.textContent=item.description||'';
+  d.style.display=item.description?'block':'none';
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLb(){ document.getElementById('lightbox').classList.remove('open'); }
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLb(); });
+load();
+
+</script>
+
+<script>
+var FX_FLOAT = ['✧','✦','♡','☾','✦','♡'];
+var FX_CLICK = '✦';
+var FX_COUNT = 16;
+var FX_TILT  = false;
+</script>
+<script src="../fx.js"></script>
+<script>
+(function(){
+  if(typeof window.fxHearts==='function')return;
+  var SH=['✧','✦','♡','✧','☾','✦'],fx=document.getElementById('fx');
+  for(var i=0;i<18;i++){
+    var s=document.createElement('span');
+    s.className='fxfb';s.textContent=SH[i%SH.length];
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(100+Math.random()*40)+'%';
+    s.style.animationDuration=(9+Math.random()*9)+'s';
+    s.style.animationDelay=(Math.random()*9)+'s';
+    s.style.fontSize=(12+Math.random()*14)+'px';
+    fx.appendChild(s);
+  }
+})();
+</script>
+</body>
+</html>

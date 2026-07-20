@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>지망ノ — Official Fan Page</title>
+<meta property="og:title" content="지망ノ Official">
+<meta property="og:description" content="지망ノ (ジマン · RUSH) 팬페이지 — 프로필 · 일정 · 업보 · 노래책 · 옷장">
+<meta property="og:image" content="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<style>
+/* ================= 디자인 토큰 =================
+   theme-* (admin 🎨테마 탭) → --main 계열이 원본,
+   E 스킨 이름(--ink/--violet/--lilac/--magenta)은 그 별칭이다.
+   이렇게 해야 applyTheme()이 이 페이지 색까지 실제로 바꾼다. */
+:root{
+  --main:#e05fb4;        /* 마젠타 (포인트) */
+  --main-dark:#6b3fa0;   /* 바이올렛 */
+  --main-deep:#1b0f38;   /* 잉크 — 외곽선 */
+  --main-light:#bca5fa;  /* 라일락 (지정 메인) */
+  --bg:#241344;          /* 나이트 */
+  --logo:#1b0f38;
+
+  --ink:var(--main-deep); --ink2:#2e1b5c;
+  --violet:var(--main-dark); --lilac:var(--main-light);
+  --magenta:var(--main); --pink:#ff9ede;
+  --cream:#f9f0ff; --gold:#ffd98a; --night:var(--bg);
+  --text:#241344; --text-s:#5c4590;
+  --f-body:'Noto Sans KR',sans-serif;
+  --f-serif:'Noto Serif KR','Gowun Batang',serif;
+  --f-disp:'Gowun Batang',serif;
+  --f-mono:ui-monospace,Menlo,Consolas,monospace;
+  --rule:32px;                       /* 노트 괘선 격자 */
+  --rulec:rgba(224,95,180,.34);
+  --rulec2:rgba(224,95,180,.14);
+}
+body.dark{--cream:#241344;--text:#f4ecff;--text-s:#c3aef0;--night:#140a29}
+body.dark{
+  background-image:
+    linear-gradient(180deg, rgba(8,4,20,.82) 0%, rgba(12,6,28,.74) 40%, rgba(6,3,16,.9) 100%),
+    url('bg.jpg');
+}
+*{box-sizing:border-box;margin:0;padding:0}
+/* ⚠️ 배경 이미지는 body::before(가상요소) 말고 body 자체 배경 레이어에.
+   ::before + 음수 z-index 는 구조에 따라 아예 안 뜨는 사고가 있다.
+   위 = 가독용 워시(카드·글자 대비 확보), 아래 = 픽셀아트 야경 */
+body{font-family:var(--f-body);color:var(--text);line-height:1.8;
+  background-color:#180d33;
+  background-image:
+    linear-gradient(180deg, rgba(24,13,51,.55) 0%, rgba(30,16,62,.34) 38%, rgba(20,10,41,.78) 100%),
+    url('bg.jpg');
+  background-repeat:no-repeat,no-repeat;
+  background-position:center,center 42%;
+  background-size:100% 100%,cover;
+  background-attachment:fixed,fixed;
+  padding:26px 4% 40px}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+
+/* FOUC 방지 — 데이터 로딩 후 body.ready */
+.grid{opacity:0;transition:opacity .3s}
+body.ready .grid{opacity:1}
+@media(prefers-reduced-motion:reduce){.grid{opacity:1}}
+
+.scan{position:absolute;inset:0;pointer-events:none;z-index:6;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px)}
+.spk{position:absolute;pointer-events:none;color:#fff;font-size:14px;
+  text-shadow:0 0 8px var(--pink);animation:tw 2.4s ease-in-out infinite;z-index:4}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(25deg)}}
+
+/* ================= 레이아웃 ================= */
+.grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:230px 1fr;gap:22px;align-items:start}
+.side{position:sticky;top:26px;display:grid;justify-items:center;gap:11px;padding:20px 14px 22px;
+  background:var(--cream);border:4px solid var(--ink);box-shadow:8px 8px 0 rgba(224,95,180,.5)}
+.s-av{position:relative;width:126px;height:126px}
+.s-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:4px solid var(--ink);
+  background:var(--lilac);cursor:pointer}
+.s-av .ring{position:absolute;inset:-9px;border-radius:50%;border:3px dashed var(--magenta);animation:spin 22s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.s-logo{text-align:center;line-height:1.15}
+.s-logo b{display:block;font-family:var(--f-serif);font-weight:900;font-size:30px;color:var(--logo);letter-spacing:-1px}
+body.dark .s-logo b{color:#f4ecff}
+.s-logo span{font-size:12.5px;letter-spacing:4px;color:var(--magenta);font-weight:800}
+.s-menu{display:grid;gap:6px;width:100%}
+.sm{display:flex;align-items:center;gap:8px;padding:10px 13px;font-size:15.5px;font-weight:700;
+  border:3px solid var(--ink);background:#fff;color:var(--ink);transition:.13s;box-shadow:3px 3px 0 var(--lilac)}
+body.dark .sm{background:#31215c;color:#f4ecff;box-shadow:3px 3px 0 var(--violet)}
+.sm:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--magenta)}
+.sm.on{background:var(--magenta);color:#fff;box-shadow:3px 3px 0 var(--ink)}
+.s-h{font-size:12.5px;letter-spacing:5px;color:var(--magenta);font-weight:800}
+.s-tags{display:grid;gap:5px;width:100%}
+.tag{display:block;text-align:center;font-size:13.5px;font-weight:800;padding:5px 10px;
+  border:2px solid var(--ink);background:var(--lilac);color:var(--ink)}
+.s-util{display:flex;align-items:center;gap:9px}
+.ask{padding:9px 20px;font-size:14px;font-weight:800;border:3px solid var(--ink);
+  background:var(--gold);color:var(--ink);box-shadow:3px 3px 0 var(--magenta)}
+.dk{width:23px;height:34px;border:3px solid var(--ink);background:#fff;position:relative;cursor:pointer;flex:none}
+body.dark .dk{background:#31215c}
+.dk .knob{position:absolute;left:1px;top:1px;width:15px;height:15px;background:var(--magenta);transition:.2s;
+  display:flex;align-items:center;justify-content:center;font-size:8px;font-style:normal}
+body.dark .dk .knob{top:13px;background:var(--gold)}
+.page{min-width:0;display:grid;gap:26px}
+
+/* ================= LP 자켓 히어로 ================= */
+.sleeve{position:relative;border:5px solid var(--ink);background:
+    linear-gradient(180deg,#1b0f38 0 22%,#4a2a86 22% 40%,#8a4bb4 40% 56%,#e07fc4 56% 74%,#ffc4e8 74% 100%);
+  box-shadow:10px 10px 0 rgba(224,95,180,.5);overflow:hidden;
+  display:grid;grid-template-columns:1.35fr .65fr;min-height:330px}
+.sleeve .art{position:relative;overflow:hidden}
+.sleeve .art img{width:100%;height:100%;object-fit:cover;filter:saturate(1.35) contrast(1.1)}
+.sleeve .art::after{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.28) 0 1px,transparent 1px 46px),
+             repeating-linear-gradient(180deg,rgba(255,255,255,.28) 0 1px,transparent 1px 46px)}
+.sleeve .meta{position:relative;border-left:5px solid var(--ink);padding:20px 18px;background:rgba(27,15,56,.9);color:#fff}
+/* ⚠️ 클래스명 sidea — 'side'로 두면 좌측 사이드바 전역 스타일을 상속해 트랙리스트를 덮는다 */
+.sleeve .meta .sidea{display:block;font-family:var(--f-mono);font-size:13px;letter-spacing:4px;
+  color:var(--ink);font-weight:700;background:var(--pink);border:3px solid var(--ink);
+  padding:5px 12px;margin-bottom:12px;text-align:center}
+.sleeve .meta ol{margin-top:10px;display:grid;gap:5px}
+.sleeve .meta li{display:grid;grid-template-columns:26px 1fr;gap:7px;font-size:14.5px;
+  border-bottom:1px dashed rgba(255,255,255,.28);padding:4px 0}
+.sleeve .meta li i{font-family:var(--f-mono);font-style:normal;color:var(--gold);font-weight:700}
+.sleeve .meta li b{font-weight:800}
+.disc{position:absolute;right:-72px;top:50%;transform:translateY(-50%);width:230px;height:230px;border-radius:50%;
+  background:repeating-radial-gradient(circle,#1b0f38 0 3px,#2e1b5c 3px 5px);
+  border:4px solid var(--ink);z-index:3;animation:spin 12s linear infinite}
+.disc::after{content:'';position:absolute;inset:38%;border-radius:50%;background:var(--magenta);border:3px solid var(--ink)}
+
+/* ================= NOW PLAYING 바 ================= */
+.bar{display:flex;align-items:center;gap:12px;background:var(--ink);color:#fff;
+  border:4px solid var(--ink);padding:9px 16px;font-family:var(--f-mono);font-size:14px;letter-spacing:2px;flex-wrap:wrap}
+.bar b{color:var(--gold);font-family:var(--f-body)}
+.bar .dot{width:9px;height:9px;background:var(--pink);border-radius:50%;flex:none}
+
+/* ================= 노트 카드 ================= */
+.letter{position:relative;border:3px solid var(--ink);padding:0;height:100%;
+  display:flex;flex-direction:column;background:var(--cream)}
+.letter .lh{display:block;flex:none;background:var(--ink);color:#fff;font-family:var(--f-serif);
+  font-weight:900;font-size:18px;padding:8px 20px;letter-spacing:1px}
+.letter .lb{flex:1 1 auto;padding:16px 22px 0;display:flex;flex-direction:column}
+/* 괘선 = 3px "부드러운 선"(연-진-연). 딱 떨어지는 2px 하드 라인은 카드가 기울면
+   서브픽셀 샘플링 때문에 구간마다 진하기가 튀어 끊겨 보인다. 가장자리를 흐리면 균일해진다 */
+.rl,.fill{background-image:repeating-linear-gradient(180deg,
+    transparent 0 calc(var(--rule) - 3px),
+    var(--rulec2) calc(var(--rule) - 3px) calc(var(--rule) - 2px),
+    var(--rulec)  calc(var(--rule) - 2px) calc(var(--rule) - 1px),
+    var(--rulec2) calc(var(--rule) - 1px) var(--rule));
+  background-size:100% var(--rule);background-position:0 0;background-repeat:repeat}
+.rl{line-height:var(--rule)}
+.rl p,.rl li,.rl .rh{line-height:var(--rule)}
+.rl .rh{margin:0}
+.rl .rgrp{margin:0 0 var(--rule)}
+.rl .rgrp:last-child{margin-bottom:0}
+.rl li{padding-top:0;padding-bottom:0}
+.fill{flex:1 1 auto;min-height:var(--rule)}
+/* 기울기·그림자 방향을 일부러 엇갈리게 — 같은 방향이면 그냥 삐딱한 카드로 보인다 */
+.e1{transform:rotate(-.55deg)}  .letter.e1{box-shadow:-7px 7px 1px rgba(188,165,250,.75)}
+.e2{transform:rotate(.45deg)}   .letter.e2{box-shadow: 7px 7px 1px rgba(224,95,180,.5)}
+.e3{transform:rotate(-.35deg)}  .letter.e3{box-shadow:-7px 7px 1px rgba(255,217,138,.65)}
+.e4{transform:rotate(.6deg)}    .letter.e4{box-shadow: 7px 7px 1px rgba(224,95,180,.5)}
+.e5{transform:rotate(-.45deg)}  .letter.e5{box-shadow:-7px 7px 1px rgba(188,165,250,.75)}
+/* 기울어진 요소의 그림자는 blur 0이면 계단처럼 깨져 보인다 — 1px만 흐려 경계를 정리 */
+/* 회전한 요소 안의 괘선·테두리가 구간마다 끊겨 보이는 문제:
+   레이어로 승격시켜 "그린 다음 통째로 회전"하게 만들면 선 굵기가 균일해진다 */
+.e1,.e2,.e3,.e4,.e5{will-change:transform;backface-visibility:hidden}
+.bar.e0{transform:rotate(.3deg);will-change:transform;backface-visibility:hidden}
+
+.g2{display:grid;grid-template-columns:1.2fr .8fr;gap:24px}
+.g2b{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:9px}
+.pf{border:3px solid var(--ink);background:#fff;padding:10px 6px;text-align:center}
+body.dark .pf{background:#31215c}
+.pf span{display:block;font-size:13px;color:var(--magenta);font-weight:800;line-height:1.5}
+.pf b{display:block;font-size:16.5px;line-height:1.5}
+.dayrow{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.dcell{border:3px solid var(--ink);background:#fff;padding:11px 3px;text-align:center}
+body.dark .dcell{background:#31215c}
+.dcell .d{font-family:var(--f-mono);font-size:14px;letter-spacing:1px;color:var(--violet);font-weight:700;line-height:1.5}
+body.dark .dcell .d{color:var(--lilac)}
+.dcell .s{font-size:13px;font-weight:700;color:var(--magenta);line-height:1.5}
+.dcell.off{background:var(--ink);color:#fff}
+.dcell.off .d{color:var(--pink)}
+.rules li{position:relative;padding:0 0 0 16px;font-size:15px}
+.rules li::before{content:'✧';position:absolute;left:0;color:var(--magenta);font-size:12px}
+.rh{display:block;font-weight:800;font-size:16px}
+.lnks{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.lnk{display:block;text-align:center;padding:12px 5px;font-size:15px;font-weight:800;
+  border:3px solid var(--ink);background:#fff;color:var(--ink);box-shadow:3px 3px 0 var(--lilac);transition:.13s}
+body.dark .lnk{background:#31215c;color:#f4ecff}
+.lnk:hover{background:var(--magenta);color:#fff;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+footer{text-align:center;font-size:13px;line-height:1.8;color:#c9b3f5;padding:6px 0 2px}
+
+/* ================= 문의 모달 ================= */
+.modal{position:fixed;inset:0;background:rgba(20,10,41,.7);display:none;place-items:center;z-index:200;padding:20px}
+.modal.on{display:grid}
+.modal .mb{background:var(--cream);border:5px solid var(--ink);box-shadow:10px 10px 0 var(--magenta);padding:26px;width:100%;max-width:430px}
+.modal h2{font-family:var(--f-serif);font-weight:900;color:var(--text);margin-bottom:10px;font-size:23px}
+.modal p{font-size:14px;color:var(--text-s);margin-bottom:10px}
+.modal textarea{width:100%;box-sizing:border-box;height:128px;border:3px solid var(--ink);padding:12px;
+  font-family:inherit;font-size:15px;resize:none;background:#fff;color:#241344}
+.modal .mr{display:flex;gap:8px;margin-top:12px}
+.modal .mr button{flex:1;padding:12px;font-size:15px;font-weight:800;border:3px solid var(--ink)}
+.modal .ok{background:var(--magenta);color:#fff}
+.modal .no{background:var(--lilac);color:var(--ink)}
+
+/* ================= fx 폴백 입자 (fx.js 없을 때만) ================= */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+#fx .fxfb{position:absolute;color:var(--pink);opacity:.65;animation:fxup linear infinite;text-shadow:0 0 10px var(--magenta)}
+@keyframes fxup{0%{transform:translateY(0) rotate(0);opacity:0}12%{opacity:.75}
+  100%{transform:translateY(-118vh) rotate(300deg);opacity:0}}
+.pop{position:fixed;pointer-events:none;z-index:190;font-size:20px;animation:popup .9s ease-out forwards;text-shadow:0 0 10px var(--magenta)}
+@keyframes popup{0%{transform:translate(-50%,-50%) scale(.4);opacity:1}
+  100%{transform:translate(-50%,-190%) scale(1.3);opacity:0}}
+.bounce{animation:bnc .5s ease}
+@keyframes bnc{0%,100%{transform:scale(1)}35%{transform:scale(1.13) rotate(-5deg)}70%{transform:scale(.95)}}
+
+/* 모바일: background-attachment:fixed 는 iOS 사파리에서 깨지거나 버벅인다.
+   폭 맞춰 위쪽에 고정 배치하고, 아래는 배경색이 이어받게 한다 */
+@media(max-width:768px){
+  body{
+    background-attachment:scroll,scroll;
+    background-position:center,center top;
+    background-size:100% 100%,100% auto;
+  }
+}
+
+/* ================= 반응형 ================= */
+@media(max-width:980px){
+  .grid{grid-template-columns:1fr}
+  .side{position:static;box-shadow:6px 6px 0 rgba(224,95,180,.5)}
+  .s-menu{grid-template-columns:repeat(2,1fr)}
+  .sleeve{grid-template-columns:1fr;min-height:0}
+  .sleeve .art{aspect-ratio:16/9}
+  .sleeve .meta{border-left:0;border-top:5px solid var(--ink)}
+  .disc{display:none}
+  .g2,.g2b{grid-template-columns:1fr}
+}
+@media(max-width:880px){
+  /* 모바일은 기울임 해제 — 좁은 폭에서 가로 스크롤이 생긴다 */
+  .e1,.e2,.e3,.e4,.e5,.bar.e0{transform:none}
+}
+@media(max-width:560px){
+  body{padding:18px 14px 34px}
+  .lnks{grid-template-columns:repeat(2,1fr)}
+  .dayrow{gap:4px}
+  .dcell{padding:9px 1px}
+  .dcell .d{font-size:12.5px;letter-spacing:0}
+  .dcell .s{font-size:12.5px}
+  .letter .lb{padding:14px 15px 0}
+}
+</style>
+</head>
+<body>
+<script>/* 첫 페인트 전 다크 복원 — 번쩍임 방지 */
+if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark');</script>
+
+<div id="fx"></div>
+
+<div class="grid">
+  <!-- ===== 좌측 사이드바 (전 페이지 동일 마크업·동일 순서) ===== -->
+  <aside class="side">
+    <div class="s-av" id="avatarWrap"><div class="ring"></div>
+      <img class="avatar avi" id="avatar" src="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg" referrerpolicy="no-referrer" alt="지망ノ"></div>
+    <div class="s-logo"><b data-hook="info-name">지망ノ</b><span data-hook="info-en">ジマン · RUSH</span></div>
+    <nav class="s-menu">
+      <a href="index.html" class="sm on">☾ 홈</a><a href="profile/" class="sm">✧ 프로필</a><a href="notice/" class="sm">✉ 공지</a>
+      <a href="schedule/" class="sm">▤ 일정</a><a href="work/" class="sm">♡ 업보</a><a href="song/" class="sm">♪ 노래책</a>
+      <a href="dress/" class="sm">✂ 옷장</a><a href="minigame/" class="sm">✦ 미니게임</a>
+    </nav>
+    <div class="s-h">T A G S</div>
+    <div class="s-tags" id="tagBox" data-hook="info-tags"><span class="tag">#시티팝</span><span class="tag">#첫사랑</span><span class="tag">#보라</span></div>
+    <div class="s-util"><a class="ask" href="#" onclick="openAsk();return false">문의</a>
+      <div class="dk" onclick="toggleDark()"><i class="knob"></i></div></div>
+  </aside>
+
+  <main class="page">
+    <!-- ===== 1. LP 자켓 히어로 ===== -->
+    <div class="sleeve">
+      <div class="art">
+        <img id="mainArt" src="https://stimg.sooplive.com/NORMAL_BBS/9/26494629/195569ee6ac1cf4a8.gif" referrerpolicy="no-referrer" alt="지망ノ 일러스트">
+        <i class="spk" style="left:14%;top:18%">✧</i><i class="spk" style="left:62%;top:12%;animation-delay:.7s">✦</i>
+        <i class="spk" style="left:38%;top:64%;animation-delay:1.3s">✧</i>
+        <div class="scan" style="opacity:.6"></div>
+      </div>
+      <div class="meta">
+        <div class="sidea">SIDE A · 1st PRESS</div>
+        <ol>
+          <li><i>01</i><b>DEBUT</b></li>
+          <li><i>02</i><b data-hook="info-debut">2023.02.07</b></li>
+          <li><i>03</i><b data-hook="info-birth" data-prefix="BIRTH ">BIRTH 02.12</b></li>
+          <li><i>04</i><b data-hook="info-team">RUSH</b></li>
+          <li><i>05</i><b data-hook="info-fandom" data-prefix="FAN — ">FAN — 용망</b></li>
+          <li><i>06</i><b data-hook="info-song">첫사랑</b></li>
+        </ol>
+      </div>
+      <div class="disc"></div>
+    </div>
+
+    <!-- ===== 2. NOW PLAYING ===== -->
+    <div class="bar e0">
+      <span class="dot"></span><span>NOW PLAYING</span><b data-hook="hero-quote">「난 너 좋아해」</b>
+      <span class="dot"></span><span id="dday" data-hook="dday">생일 D-—</span>
+    </div>
+
+    <!-- ===== 3~4. PROFILE / LIKE·HATE ===== -->
+    <div class="g2">
+      <div class="letter e1">
+        <span class="lh">PROFILE</span>
+        <div class="lb">
+          <div class="kv">
+            <div class="pf"><span>데뷔</span><b data-hook="info-debut">2023.02.07</b></div>
+            <div class="pf"><span>생일</span><b data-hook="info-birth">02.12</b></div>
+            <div class="pf"><span>성별</span><b data-hook="info-gender">여</b></div>
+            <div class="pf"><span>소속</span><b data-hook="info-team">RUSH</b></div>
+            <div class="pf"><span>팬네임</span><b data-hook="info-fandom">용망</b></div>
+            <div class="pf"><span>콘텐츠</span><b data-hook="info-content">저챗·게임·노래</b></div>
+          </div>
+          <p class="rl" style="margin-top:13px;font-size:15.5px" data-hook="main-story">발로란트 · 마인크래프트 · 로스트아크를 주로 하고, 가끔 노래도 불러요.<br>시그니처 곡 <b>첫사랑</b> — 인디 &amp; 발라드</p>
+          <div class="fill"></div>
+        </div>
+      </div>
+      <div class="letter e2">
+        <span class="lh">LIKE / HATE</span>
+        <div class="lb">
+          <p class="rl" style="font-size:15.5px">
+            <b style="color:var(--magenta)">♡ 좋아해요</b><br><span id="likeLine">용망 · 보라색 · 게임 · 잠</span><br>
+            <b style="color:var(--violet)">✕ 싫어해요</b><br><span id="hateLine">오이 · 좀비 · 갑툭튀 · 더위</span></p>
+          <div class="fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 5. 이번 주 방송 ===== -->
+    <div class="letter e3">
+      <span class="lh">이번 주 방송</span>
+      <div class="lb">
+        <div class="dayrow" id="dayrow">
+          <div class="dcell" id="day-0"><div class="d">MON</div><div class="s">랜덤</div></div>
+          <div class="dcell" id="day-1"><div class="d">TUE</div><div class="s">랜덤</div></div>
+          <div class="dcell" id="day-2"><div class="d">WED</div><div class="s">랜덤</div></div>
+          <div class="dcell" id="day-3"><div class="d">THU</div><div class="s">랜덤</div></div>
+          <div class="dcell" id="day-4"><div class="d">FRI</div><div class="s">랜덤</div></div>
+          <div class="dcell" id="day-5"><div class="d">SAT</div><div class="s">랜덤</div></div>
+          <div class="dcell off" id="day-6"><div class="d">SUN</div><div class="s">휴방</div></div>
+        </div>
+        <p class="rl" style="margin-top:9px;font-size:14.5px;color:var(--text-s)" data-hook="day-note">주 1일 휴방 · 방송 시간은 랜덤입니다</p>
+        <div class="fill"></div>
+      </div>
+    </div>
+
+    <!-- ===== 6~7. CHAT RULES / LINKS ===== -->
+    <div class="g2b">
+      <div class="letter e4">
+        <span class="lh">🎀 CHAT RULES</span>
+        <div class="lb">
+          <div class="rules rl">
+            <div class="rgrp"><b class="rh" data-hook="rule1-title">서로 존중하기</b><ul><li data-hook="rule1-body">비방 · 욕설 · 인신공격 금지</li></ul></div>
+            <div class="rgrp"><b class="rh" data-hook="rule2-title">민감한 주제 금지</b><ul><li data-hook="rule2-body">정치 · 종교 등</li></ul></div>
+            <div class="rgrp"><b class="rh" data-hook="rule3-title">타 방송인 언급 금지</b><ul><li data-hook="rule3-body">비교 · 타스 유도 포함</li></ul></div>
+            <div class="rgrp"><b class="rh" data-hook="rule4-title">시청자 간 사담 자제</b><ul><li data-hook="rule4-body">소통은 지망이랑 해주세요</li></ul></div>
+          </div>
+          <div class="fill"></div>
+        </div>
+      </div>
+      <div class="letter e5">
+        <span class="lh">LINKS</span>
+        <div class="lb">
+          <div class="lnks">
+            <a class="lnk" id="link-soop" href="https://www.sooplive.com/station/jimang2" target="_blank" rel="noopener">SOOP</a>
+            <a class="lnk" id="link-yt" href="#" target="_blank" rel="noopener">YouTube</a>
+            <a class="lnk" id="link-x" href="#" target="_blank" rel="noopener">X</a>
+            <a class="lnk" id="link-discord" href="#" target="_blank" rel="noopener">디스코드</a>
+            <a class="lnk" id="link-cafe" href="#" target="_blank" rel="noopener">팬카페</a>
+            <a class="lnk" id="link-fancim" href="#" target="_blank" rel="noopener">팬심</a>
+          </div>
+          <p class="rl" style="margin-top:13px;font-size:15px;color:var(--text-s)">
+            업보 — 기본 / 상시 / 이벤트 / 듀오권<br>일정 — 주간 / 월간 / 다가오는 일정</p>
+          <div class="fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>© 2026 지망ノ Official.<br>비즈니스 문의 — 문의 버튼을 이용해 주세요</footer>
+  </main>
+</div>
+
+<!-- ===== 문의 모달 ===== -->
+<div class="modal" id="askBd" onclick="if(event.target===this)closeAsk()">
+  <div class="mb">
+    <h2>문의하기</h2>
+    <p>남겨주신 내용은 관리자만 볼 수 있어요.</p>
+    <input id="askNick" placeholder="닉네임 (선택)" style="width:100%;box-sizing:border-box;border:3px solid var(--ink);padding:10px 12px;font-family:inherit;font-size:15px;background:#fff;color:#241344;margin-bottom:9px">
+    <textarea id="askTxt" placeholder="문의 내용을 적어주세요!"></textarea>
+    <div class="mr"><button class="no" onclick="closeAsk()">닫기</button><button class="ok" onclick="sendAsk()">보내기</button></div>
+  </div>
+</div>
+
+<!-- ===== 공통 스크립트 (다크·모달·D-Day) ===== -->
+<script>
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');
+  syncKnob();
+}
+function syncKnob(){
+  var d=document.body.classList.contains('dark');
+  document.querySelectorAll('.dk .knob').forEach(function(i){i.textContent=d?'☀':'☾'});
+}
+syncKnob();
+
+function openAsk(){document.getElementById('askBd').classList.add('on')}
+function closeAsk(){document.getElementById('askBd').classList.remove('on')}
+async function sendAsk(){
+  var t=document.getElementById('askTxt').value.trim();
+  if(!t){alert('내용을 입력해 주세요!');return}
+  var ok=false;
+  var nick=document.getElementById('askNick').value.trim();
+  try{ ok = await insertRow('inquiries',{ nickname:nick||null, message:t }); }catch(e){ ok=false; }
+  if(ok){ alert('문의가 전송되었습니다! 💜');
+    document.getElementById('askTxt').value=''; document.getElementById('askNick').value=''; closeAsk(); }
+  else  { alert('전송에 실패했어요. 잠시 후 다시 시도해 주세요.'); }
+}
+function ddayOf(md){
+  if(!md) return null;
+  var p=String(md).replace(/[.\/]/g,'-').split('-').filter(Boolean);
+  if(p.length<2) return null;
+  var mm=+p[p.length-2], dd=+p[p.length-1];
+  if(!mm||!dd) return null;
+  var now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var t=new Date(today.getFullYear(),mm-1,dd);
+  if(t<today) t=new Date(today.getFullYear()+1,mm-1,dd);
+  return Math.round((t-today)/86400000);
+}
+function paintDday(md){
+  var n=ddayOf(md||'02-12'); if(n===null) return;
+  var txt=(n===0?'오늘 생일! 🎉':'생일 D-'+n);
+  document.querySelectorAll('#dday').forEach(function(e){e.textContent=txt});
+}
+paintDday('02-12');
+</script>
+
+<!-- ===== Supabase 로더 ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase.js"></script>
+<script>
+/* DB 값은 배열/객체일 수 있다 — 절대 그대로 innerHTML 하지 않는다 ([object Object] 방지) */
+function asText(v){
+  if(v===null||v===undefined) return '';
+  if(Array.isArray(v)) return v.filter(function(x){return x!==null&&x!==undefined&&x!==''}).map(asText).join(' · ');
+  if(typeof v==='object') return Object.keys(v).map(function(k){return asText(v[k])}).filter(Boolean).join(' · ');
+  return String(v);
+}
+function ready(){ document.body.classList.add('ready'); }
+setTimeout(ready,1600); /* 폴백 — 오프라인이어도 화면은 반드시 뜬다 */
+
+(async function load(){
+  try{
+    var res = await db.from('profile').select('data').eq('id',1).single();
+    var p = (res && res.data && res.data.data) || {};
+
+    /* 1) data-hook 텍스트 */
+    document.querySelectorAll('[data-hook]').forEach(function(el){
+      var k=el.getAttribute('data-hook');
+      if(k==='dday') return;
+      var v=p[k]; if(v===undefined||v===null||v==='') return;
+      if(k==='info-tags'){
+        var tags=Array.isArray(v)?v:String(v).split(/[,\s]+/).filter(Boolean);
+        el.innerHTML='';
+        tags.slice(0,4).forEach(function(t){
+          var s=document.createElement('span'); s.className='tag';
+          s.textContent = t.charAt(0)==='#'? t : '#'+t; el.appendChild(s);
+        });
+        return;
+      }
+      if(k==='main-story'){ el.innerHTML=asText(v).replace(/\n/g,'<br>'); return; }
+      el.textContent=(el.getAttribute('data-prefix')||'')+asText(v);
+    });
+
+    /* 2) 아바타 — 직접 URL > SOOP 아이디 자동 */
+    var av=document.getElementById('avatar');
+    if(p['avatar']) av.src=asText(p['avatar']);
+    else if(p['soop-id']){
+      var id=asText(p['soop-id']);
+      av.src='https://profile.img.sooplive.co.kr/LOGO/'+id.slice(0,2)+'/'+id+'/'+id+'.jpg';
+    }
+    if(p['main-art']) document.getElementById('mainArt').src=asText(p['main-art']);
+
+    /* 3) 좋아/싫어 */
+    var likes=['like1','like2','like3','like4'].map(function(k){return asText(p[k])}).filter(Boolean);
+    var hates=['dislike1','dislike2','dislike3','dislike4'].map(function(k){return asText(p[k])}).filter(Boolean);
+    if(likes.length) document.getElementById('likeLine').textContent=likes.join(' · ');
+    if(hates.length) document.getElementById('hateLine').textContent=hates.join(' · ');
+
+    /* 4) 링크 */
+    [['link-soop','link-soop'],['link-yt','link-yt'],['link-x','link-x'],
+     ['link-discord','link-discord'],['link-cafe','link-cafe'],['link-fancim','link-fancim']]
+     .forEach(function(pair){
+       var el=document.getElementById(pair[0]), v=asText(p[pair[1]]);
+       if(el&&v) el.href=v;
+     });
+
+    /* 5) 요일 — days CSV '0'~'6' (0=월 … 6=일), 체크된 날 = 방송 */
+    if(p['days']!==undefined&&p['days']!==null&&p['days']!==''){
+      var on=(Array.isArray(p['days'])?p['days']:String(p['days']).split(',')).map(function(x){return String(x).trim()});
+      for(var i=0;i<7;i++){
+        var c=document.getElementById('day-'+i); if(!c) continue;
+        var live=on.indexOf(String(i))>-1;
+        c.classList.toggle('off',!live);
+        c.querySelector('.s').textContent = live ? (asText(p['day-label'])||'랜덤') : '휴방';
+      }
+    }
+
+    /* 6) 생일 D-Day 재계산 */
+    if(p['info-birth']) paintDday(asText(p['info-birth']));
+
+    if(typeof initIframeResize==='function') initIframeResize();
+  }catch(e){ console.warn('profile load skipped:', e); }
+  ready();
+})();
+</script>
+
+<!-- ===== fx.js — 폴백보다 반드시 위 ===== -->
+<script>
+var FX_FLOAT = ['✧','✦','♡','☾','✦','♡'];
+var FX_CLICK = '✦';
+var FX_COUNT = 16;
+var FX_TILT  = false;   /* 노트 카드가 이미 rotate 상태 — 틸트를 켜면 기울기가 덮어써진다 */
+</script>
+<script src="fx.js"></script>
+
+<!-- ===== 단독 파일 열람용 폴백 (fx.js 있으면 스스로 종료) ===== -->
+<script>
+(function(){
+  if(typeof window.fxHearts==='function')return;
+  var SH=['✧','✦','♡','✧','☾','✦'],fx=document.getElementById('fx');
+  for(var i=0;i<18;i++){
+    var s=document.createElement('span');
+    s.className='fxfb';s.textContent=SH[i%SH.length];
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(100+Math.random()*40)+'%';
+    s.style.animationDuration=(9+Math.random()*9)+'s';
+    s.style.animationDelay=(Math.random()*9)+'s';
+    s.style.fontSize=(12+Math.random()*14)+'px';
+    fx.appendChild(s);
+  }
+  document.addEventListener('click',function(e){
+    if(e.target.closest('button,a,textarea,input'))return;
+    for(var j=0;j<3;j++)pop(e.clientX,e.clientY);
+  });
+  function pop(x,y){
+    var s=document.createElement('span');
+    s.className='pop';s.textContent=Math.random()<.4?'✧':'✦';
+    s.style.left=(x+(Math.random()*40-20))+'px';
+    s.style.top=(y+(Math.random()*20-10))+'px';
+    document.body.appendChild(s);
+    setTimeout(function(){s.remove()},900);
+  }
+})();
+</script>
+</body>
+</html>

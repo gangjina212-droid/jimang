@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>업보 현황 — 지망ノ</title>
+<meta property="og:title" content="지망ノ · 업보 현황">
+<meta property="og:image" content="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+
+.upbo-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.search-box{flex:1;min-width:200px;box-sizing:border-box;padding:11px 14px;border:3px solid var(--ink);
+  background:#fff;color:var(--text);font-family:inherit;font-size:15px;outline:none}
+body.dark .search-box{background:#3a2870;color:#f4ecff}
+.search-box:focus{box-shadow:3px 3px 0 var(--magenta)}
+.upbo-update{font-family:var(--f-mono);font-size:13px;color:var(--text-soft)}
+.cat-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.cat-tab{padding:8px 14px;border:3px solid var(--ink);background:#fff;color:var(--ink);
+  font-size:14px;font-weight:800;box-shadow:2px 2px 0 var(--lilac);transition:var(--transition)}
+body.dark .cat-tab{background:#31215c;color:#f4ecff}
+.cat-tab:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--magenta)}
+.cat-tab.active{background:var(--magenta);color:#fff;box-shadow:2px 2px 0 var(--ink)}
+.cat-tab .cnt{font-family:var(--f-mono);font-size:12.5px;opacity:.85}
+
+.viewer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.viewer-card{border:3px solid var(--ink);background:#fff;padding:14px 10px;text-align:center;cursor:pointer;
+  box-shadow:4px 4px 0 var(--lilac);transition:var(--transition)}
+body.dark .viewer-card{background:#31215c}
+.viewer-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--magenta)}
+.viewer-av,.viewer-av-fb{width:64px;height:64px;margin:0 auto 8px;border:3px solid var(--ink);border-radius:50%;
+  object-fit:cover;background:var(--lilac);display:grid;place-items:center;
+  font-family:var(--f-serif);font-weight:900;font-size:24px;color:var(--ink)}
+.viewer-nick{font-size:15px;font-weight:800;word-break:break-all}
+.viewer-id{font-family:var(--f-mono);font-size:12.5px;color:var(--text-soft);word-break:break-all}
+.viewer-total{display:inline-block;margin-top:7px;font-size:12.5px;font-weight:800;
+  border:2px solid var(--ink);background:var(--gold);color:var(--ink);padding:1px 9px}
+
+.ov{position:fixed;inset:0;background:rgba(20,10,41,.75);display:none;place-items:center;z-index:205;padding:20px}
+.ov.show{display:grid}
+.ov .modal{background:var(--cream);border:5px solid var(--ink);box-shadow:10px 10px 0 var(--magenta);
+  width:100%;max-width:400px;max-height:80vh;display:flex;flex-direction:column}
+.modal-top{display:flex;align-items:center;gap:11px;padding:16px 18px;border-bottom:4px solid var(--ink);
+  background:var(--ink);color:#fff}
+.modal-av,.modal-av-fb{width:52px;height:52px;border:3px solid var(--pink);border-radius:50%;object-fit:cover;
+  background:var(--lilac);display:grid;place-items:center;font-family:var(--f-serif);font-weight:900;
+  font-size:21px;color:var(--ink);flex:none}
+.modal-nick{font-size:17px;font-weight:800}
+.modal-id{font-family:var(--f-mono);font-size:12.5px;color:var(--pink)}
+.modal-x{margin-left:auto;width:34px;height:34px;border:3px solid var(--ink);background:var(--gold);
+  color:var(--ink);font-size:16px;font-weight:800;flex:none}
+.modal-body{padding:16px 18px;overflow-y:auto}
+.upbo-row{display:flex;align-items:center;gap:9px;border:3px solid var(--ink);background:#fff;
+  padding:9px 12px;margin-bottom:7px}
+body.dark .upbo-row{background:#31215c}
+.upbo-row .nm{font-size:15px;font-weight:700;flex:1;min-width:0}
+.upbo-row .cat{font-size:12.5px;font-weight:800;border:2px solid var(--ink);background:var(--lilac);
+  color:var(--ink);padding:0 8px;white-space:nowrap}
+.upbo-row .cat.ev{background:var(--magenta);color:#fff}
+.upbo-row .ct{font-family:var(--f-mono);font-size:14.5px;font-weight:800;color:var(--magenta);white-space:nowrap}
+.modal-empty{text-align:center;padding:26px 10px;color:var(--text-soft);font-weight:700}
+@media(max-width:560px){
+  .viewer-grid{grid-template-columns:repeat(2,1fr);gap:9px}
+  .viewer-av,.viewer-av-fb{width:54px;height:54px}
+}
+
+</style>
+</head>
+<body>
+<script>if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark');</script>
+<div id="fx"></div>
+
+<div class="grid">
+  <aside class="side">
+    <div class="s-av" id="avatarWrap"><div class="ring"></div>
+      <img class="avatar avi" id="avatar" src="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg" referrerpolicy="no-referrer" alt="지망ノ"></div>
+    <div class="s-logo"><b>지망ノ</b><span>ジマン · RUSH</span></div>
+    <nav class="s-menu">
+      <a href="../" class="sm">☾ 홈</a>
+      <a href="../profile/" class="sm">✧ 프로필</a>
+      <a href="../notice/" class="sm">✉ 공지</a>
+      <a href="../schedule/" class="sm">▤ 일정</a>
+      <a href="../work/" class="sm on">♡ 업보</a>
+      <a href="../song/" class="sm">♪ 노래책</a>
+      <a href="../dress/" class="sm">✂ 옷장</a>
+      <a href="../minigame/" class="sm">✦ 미니게임</a>
+    </nav>
+    <div class="s-h">T A G S</div>
+    <div class="s-tags"><span class="tag">#시티팝</span><span class="tag">#첫사랑</span><span class="tag">#보라</span></div>
+    <div class="s-util"><a class="ask" href="#" onclick="openAsk();return false">문의</a>
+      <div class="dk" onclick="toggleDark()"><i class="knob"></i></div></div>
+  </aside>
+
+  <main class="page">
+   <div class="container stagger">
+    <div class="pagehero">
+      <div class="ph-left">SIDE A · TRACK 05<br><b>UPBO</b><br>1st PRESS</div>
+      <div class="ph-center">
+        <div class="ph-title">업보 현황</div>
+        <div class="ph-line"></div>
+        <div class="ph-sub">♡ 용망들의 업보를 기록합니다</div>
+      </div>
+      <div class="ph-meta">JIMANG<br><b>UPBO</b><br>KEEP SCORE</div>
+    </div>
+    <div class="card">
+      <span class="card-title">UPBO</span>
+      <div class="upbo-bar">
+        <input class="search-box" id="search" placeholder="🔍 닉네임 또는 아이디 검색...">
+        <span class="upbo-update" id="update-date"></span>
+      </div>
+      <div class="cat-tabs" id="cat-tabs"></div>
+      <div class="viewer-grid" id="grid"><div class="spinner"></div></div>
+    </div>
+
+    <div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <div class="modal-top" id="modal-top"></div>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
+    </div>
+
+    <footer>© 2026 지망ノ Official.<br>비즈니스 문의 — 문의 버튼을 이용해 주세요</footer>
+   </div>
+  </main>
+</div>
+
+<div class="askmask" id="askmask" onclick="if(event.target===this)closeAsk()">
+  <div class="askmodal">
+    <h3>문의하기</h3>
+    <p>남겨주신 내용은 관리자만 볼 수 있어요.</p>
+    <input class="input" id="askNick" placeholder="닉네임 (선택)" style="margin-bottom:9px">
+    <textarea id="askmsg" placeholder="문의 내용을 적어주세요!"></textarea>
+    <div class="askbtns"><button class="no" onclick="closeAsk()">닫기</button><button class="yes" onclick="sendAsk()">보내기</button></div>
+  </div>
+</div>
+
+<script>
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');
+  syncKnob();
+}
+function syncKnob(){
+  var d=document.body.classList.contains('dark');
+  document.querySelectorAll('.dk .knob').forEach(function(i){i.textContent=d?'☀':'☾'});
+}
+syncKnob();
+function openAsk(){document.getElementById('askmask').classList.add('on')}
+function closeAsk(){document.getElementById('askmask').classList.remove('on')}
+async function sendAsk(){
+  var t=document.getElementById('askmsg').value.trim();
+  if(!t){alert('내용을 입력해 주세요!');return}
+  var nick=document.getElementById('askNick').value.trim();
+  var ok=false;
+  try{ ok = await insertRow('inquiries',{ nickname:nick||null, message:t }); }catch(e){ ok=false; }
+  if(ok){ alert('문의가 전송되었습니다! 💜');
+    document.getElementById('askmsg').value=''; document.getElementById('askNick').value=''; closeAsk(); }
+  else  { alert('전송에 실패했어요. 잠시 후 다시 시도해 주세요.'); }
+}
+function ready(){ document.body.classList.add('ready'); }
+setTimeout(ready,1600);   /* FOUC 폴백 — DB가 느리거나 오프라인이어도 화면은 뜬다 */
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../supabase.js"></script>
+<script>
+/* 아바타는 admin의 avatar > soop-id 순으로 (사이드바는 전 페이지 공통) */
+(async function(){
+  try{
+    var res = await db.from('profile').select('data').eq('id',1).single();
+    var p=(res&&res.data&&res.data.data)||{};
+    var av=document.getElementById('avatar');
+    if(p['avatar']) av.src=String(p['avatar']);
+    else if(p['soop-id']){ var id=String(p['soop-id']);
+      av.src='https://profile.img.sooplive.co.kr/LOGO/'+id.slice(0,2)+'/'+id+'/'+id+'.jpg'; }
+  }catch(e){}
+})();
+</script>
+<script>
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function soopAvatar(id){
+  if(!id) return null;
+  id=String(id).trim().toLowerCase();
+  if(id.length<2) return null;
+  return 'https://profile.img.sooplive.co.kr/LOGO/'+id.slice(0,2)+'/'+id+'/'+id+'.jpg';
+}
+/* ⚠️ 업보 분류 4종 — admin의 업보 타입 category select 와 같은 값이어야 한다.
+   과거 데이터의 '일반'은 '기본'으로 흡수한다 */
+var UPBO_CATS=['전체','기본','상시','이벤트','듀오권'];
+function catOf(t){
+  var c=String((t&&t.category)||'기본').trim();
+  if(c==='일반'||c==='') c='기본';
+  return c;
+}
+var viewers=[], types=[], counts=[], curCat='전체', keyword='';
+
+async function init(){
+  try{
+    var r = await Promise.all([
+      fetchAll('viewers',    { order:'sort_order', asc:true }),
+      fetchAll('upbo_types', { order:'sort_order', asc:true }),
+      fetchAll('upbo_counts',{ order:'id', asc:true })
+    ]);
+    viewers=r[0]||[]; types=r[1]||[]; counts=r[2]||[];
+  }catch(e){ console.warn('upbo load failed:', e); viewers=[]; types=[]; counts=[]; }
+  var latest=counts.reduce(function(m,c){ return (c.updated_at && c.updated_at>m) ? c.updated_at : m; }, '');
+  document.getElementById('update-date').textContent = latest ? '갱신일: '+latest.slice(0,10) : '';
+  buildTabs(); render();
+  try{ if(typeof initIframeResize==='function') initIframeResize(); }catch(e){}
+  ready();
+}
+
+function typeIdsOf(cat){
+  if(cat==='전체') return null;
+  var ids={};
+  types.forEach(function(t){ if(catOf(t)===cat) ids[t.id]=1; });
+  return ids;
+}
+function viewerTotal(vid, cat){
+  var ids=typeIdsOf(cat);
+  return counts.filter(function(c){
+    return c.viewer_id===vid && c.count>0 && (!ids || ids[c.type_id]);
+  }).reduce(function(s,c){ return s+c.count; }, 0);
+}
+
+function buildTabs(){
+  var wrap=document.getElementById('cat-tabs'); wrap.innerHTML='';
+  UPBO_CATS.forEach(function(cat){
+    var n=viewers.filter(function(v){ return viewerTotal(v.id,cat)>0; }).length;
+    var b=document.createElement('button');
+    b.className='cat-tab'+(cat===curCat?' active':'');
+    b.innerHTML=esc(cat)+' <span class="cnt">'+n+'</span>';
+    b.onclick=function(){ curCat=cat; buildTabs(); render(); };
+    wrap.appendChild(b);
+  });
+}
+
+function render(){
+  var grid=document.getElementById('grid');
+  var q=keyword.toLowerCase();
+  var list=viewers.filter(function(v){
+    var okQ=!q || String(v.nickname||'').toLowerCase().indexOf(q)>-1 || String(v.soop_id||'').toLowerCase().indexOf(q)>-1;
+    var okC=(curCat==='전체') || viewerTotal(v.id,curCat)>0;
+    return okQ && okC;
+  });
+  if(!list.length){
+    grid.innerHTML='<div style="grid-column:1/-1"><div class="empty"><span class="empty-icon">♡</span>'+
+      (curCat==='전체'?'시청자가 없어요':esc(curCat)+' 업보를 가진 시청자가 없어요')+'</div></div>';
+    return;
+  }
+  grid.innerHTML=list.map(function(v){
+    var av=soopAvatar(v.soop_id), ini=esc(String(v.nickname||'?').charAt(0));
+    var avHtml = av
+      ? '<img class="viewer-av" src="'+av+'" referrerpolicy="no-referrer" alt="" onerror="this.outerHTML=\'<div class=&quot;viewer-av-fb&quot;>'+ini+'</div>\'">'
+      : '<div class="viewer-av-fb">'+ini+'</div>';
+    return '<div class="viewer-card" onclick="openModal('+v.id+')">'+avHtml+
+      '<div class="viewer-nick">'+esc(v.nickname)+'</div>'+
+      (v.soop_id?'<div class="viewer-id">('+esc(v.soop_id)+')</div>':'<div class="viewer-id">&nbsp;</div>')+
+      '<span class="viewer-total">업보 '+viewerTotal(v.id,curCat)+'</span></div>';
+  }).join('');
+}
+
+function openModal(vid){
+  var v=null;
+  viewers.forEach(function(x){ if(x.id===vid) v=x; });
+  if(!v) return;
+  var av=soopAvatar(v.soop_id), ini=esc(String(v.nickname||'?').charAt(0));
+  var avHtml = av
+    ? '<img class="modal-av" src="'+av+'" referrerpolicy="no-referrer" alt="" onerror="this.outerHTML=\'<div class=&quot;modal-av-fb&quot;>'+ini+'</div>\'">'
+    : '<div class="modal-av-fb">'+ini+'</div>';
+  document.getElementById('modal-top').innerHTML=avHtml+
+    '<div><div class="modal-nick">'+esc(v.nickname)+'</div>'+
+    (v.soop_id?'<div class="modal-id">('+esc(v.soop_id)+')</div>':'')+'</div>'+
+    '<button class="modal-x" onclick="closeModal()">✕</button>';
+
+  var mine={};
+  counts.filter(function(c){ return c.viewer_id===vid; }).forEach(function(c){ mine[c.type_id]=c.count; });
+  var rows=types.filter(function(t){ return (mine[t.id]||0)>0; }).map(function(t){
+    var cat=catOf(t);
+    return '<div class="upbo-row"><span class="nm">'+esc(t.name)+'</span>'+
+      '<span class="cat'+(cat==='이벤트'?' ev':'')+'">'+esc(cat)+'</span>'+
+      '<span class="ct">×'+mine[t.id]+'</span></div>';
+  }).join('');
+  document.getElementById('modal-body').innerHTML = rows || '<div class="modal-empty">아직 업보가 없어요 ♡</div>';
+  document.getElementById('ov').classList.add('show');
+}
+function closeModal(){ document.getElementById('ov').classList.remove('show'); }
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+document.getElementById('search').addEventListener('input', function(e){
+  keyword=e.target.value.trim(); render();
+});
+init();
+
+</script>
+
+<script>
+var FX_FLOAT = ['✧','✦','♡','☾','✦','♡'];
+var FX_CLICK = '✦';
+var FX_COUNT = 16;
+var FX_TILT  = false;
+</script>
+<script src="../fx.js"></script>
+<script>
+(function(){
+  if(typeof window.fxHearts==='function')return;
+  var SH=['✧','✦','♡','✧','☾','✦'],fx=document.getElementById('fx');
+  for(var i=0;i<18;i++){
+    var s=document.createElement('span');
+    s.className='fxfb';s.textContent=SH[i%SH.length];
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(100+Math.random()*40)+'%';
+    s.style.animationDuration=(9+Math.random()*9)+'s';
+    s.style.animationDelay=(Math.random()*9)+'s';
+    s.style.fontSize=(12+Math.random()*14)+'px';
+    fx.appendChild(s);
+  }
+})();
+</script>
+</body>
+</html>

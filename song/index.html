@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>노래책 — 지망ノ</title>
+<meta property="og:title" content="지망ノ · 노래책">
+<meta property="og:image" content="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.search-box{flex:1;min-width:200px;box-sizing:border-box;padding:11px 14px;border:3px solid var(--ink);
+  background:#fff;color:var(--text);font-family:inherit;font-size:15px;outline:none}
+body.dark .search-box{background:#3a2870;color:#f4ecff}
+.search-box:focus{box-shadow:3px 3px 0 var(--magenta)}
+.genre-tabs{display:flex;gap:7px;flex-wrap:wrap}
+.gt{padding:8px 14px;border:3px solid var(--ink);background:#fff;color:var(--ink);
+  font-size:14px;font-weight:800;box-shadow:2px 2px 0 var(--lilac);transition:var(--transition)}
+body.dark .gt{background:#31215c;color:#f4ecff}
+.gt:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--magenta)}
+.gt.active{background:var(--magenta);color:#fff;box-shadow:2px 2px 0 var(--ink)}
+.count-line{font-family:var(--f-mono);font-size:13px;color:var(--text-soft);margin:14px 0 8px}
+.s-num{font-family:var(--f-mono);font-size:13.5px;color:var(--text-soft);width:44px}
+.s-title{font-weight:800;font-size:15px}
+.s-genre{display:inline-block;font-size:12.5px;font-weight:800;white-space:nowrap;
+  border:2px solid var(--ink);background:var(--lilac);color:var(--ink);padding:1px 9px}
+.s-diff{display:inline-flex;gap:4px;align-items:center}
+.dot{width:9px;height:9px;border:2px solid var(--ink);background:#fff}
+body.dark .dot{background:#3a2870}
+.dot.on{background:var(--magenta)}
+.pg{min-width:36px;height:36px;border:3px solid var(--ink);background:#fff;color:var(--ink);
+  font-size:14px;font-weight:800;box-shadow:2px 2px 0 var(--lilac);transition:var(--transition)}
+body.dark .pg{background:#31215c;color:#f4ecff}
+.pg.active,.pg:hover{background:var(--magenta);color:#fff;box-shadow:2px 2px 0 var(--ink)}
+@media(max-width:560px){
+  .hide-m{display:none}
+  th{padding:9px 7px;font-size:12.5px}
+  td{padding:10px 7px;font-size:13.5px}
+  .s-num{width:30px}
+}
+
+</style>
+</head>
+<body>
+<script>if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark');</script>
+<div id="fx"></div>
+
+<div class="grid">
+  <aside class="side">
+    <div class="s-av" id="avatarWrap"><div class="ring"></div>
+      <img class="avatar avi" id="avatar" src="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg" referrerpolicy="no-referrer" alt="지망ノ"></div>
+    <div class="s-logo"><b>지망ノ</b><span>ジマン · RUSH</span></div>
+    <nav class="s-menu">
+      <a href="../" class="sm">☾ 홈</a>
+      <a href="../profile/" class="sm">✧ 프로필</a>
+      <a href="../notice/" class="sm">✉ 공지</a>
+      <a href="../schedule/" class="sm">▤ 일정</a>
+      <a href="../work/" class="sm">♡ 업보</a>
+      <a href="../song/" class="sm on">♪ 노래책</a>
+      <a href="../dress/" class="sm">✂ 옷장</a>
+      <a href="../minigame/" class="sm">✦ 미니게임</a>
+    </nav>
+    <div class="s-h">T A G S</div>
+    <div class="s-tags"><span class="tag">#시티팝</span><span class="tag">#첫사랑</span><span class="tag">#보라</span></div>
+    <div class="s-util"><a class="ask" href="#" onclick="openAsk();return false">문의</a>
+      <div class="dk" onclick="toggleDark()"><i class="knob"></i></div></div>
+  </aside>
+
+  <main class="page">
+   <div class="container stagger">
+    <div class="pagehero">
+      <div class="ph-left">SIDE B · TRACK 06<br><b>SONG BOOK</b><br>1st PRESS</div>
+      <div class="ph-center">
+        <div class="ph-title">노래책</div>
+        <div class="ph-line"></div>
+        <div class="ph-sub">♪ 부를 수 있는 곡 목록</div>
+      </div>
+      <div class="ph-meta">JIMANG<br><b>SONG</b><br>REQUEST WELCOME</div>
+    </div>
+    <div class="card">
+      <span class="card-title">SONG LIST</span>
+      <div class="filter-row"><input class="search-box" id="search" placeholder="🔍 곡명 · 아티스트 검색..."></div>
+      <div class="genre-tabs" id="genre-tabs"></div>
+      <div class="count-line" id="count"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="s-num">#</th><th>제목</th><th class="hide-m">아티스트</th><th>장르</th><th>난이도</th></tr></thead>
+          <tbody id="song-body"><tr><td colspan="5"><div class="spinner"></div></td></tr></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <footer>© 2026 지망ノ Official.<br>비즈니스 문의 — 문의 버튼을 이용해 주세요</footer>
+   </div>
+  </main>
+</div>
+
+<div class="askmask" id="askmask" onclick="if(event.target===this)closeAsk()">
+  <div class="askmodal">
+    <h3>문의하기</h3>
+    <p>남겨주신 내용은 관리자만 볼 수 있어요.</p>
+    <input class="input" id="askNick" placeholder="닉네임 (선택)" style="margin-bottom:9px">
+    <textarea id="askmsg" placeholder="문의 내용을 적어주세요!"></textarea>
+    <div class="askbtns"><button class="no" onclick="closeAsk()">닫기</button><button class="yes" onclick="sendAsk()">보내기</button></div>
+  </div>
+</div>
+
+<script>
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');
+  syncKnob();
+}
+function syncKnob(){
+  var d=document.body.classList.contains('dark');
+  document.querySelectorAll('.dk .knob').forEach(function(i){i.textContent=d?'☀':'☾'});
+}
+syncKnob();
+function openAsk(){document.getElementById('askmask').classList.add('on')}
+function closeAsk(){document.getElementById('askmask').classList.remove('on')}
+async function sendAsk(){
+  var t=document.getElementById('askmsg').value.trim();
+  if(!t){alert('내용을 입력해 주세요!');return}
+  var nick=document.getElementById('askNick').value.trim();
+  var ok=false;
+  try{ ok = await insertRow('inquiries',{ nickname:nick||null, message:t }); }catch(e){ ok=false; }
+  if(ok){ alert('문의가 전송되었습니다! 💜');
+    document.getElementById('askmsg').value=''; document.getElementById('askNick').value=''; closeAsk(); }
+  else  { alert('전송에 실패했어요. 잠시 후 다시 시도해 주세요.'); }
+}
+function ready(){ document.body.classList.add('ready'); }
+setTimeout(ready,1600);   /* FOUC 폴백 — DB가 느리거나 오프라인이어도 화면은 뜬다 */
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../supabase.js"></script>
+<script>
+/* 아바타는 admin의 avatar > soop-id 순으로 (사이드바는 전 페이지 공통) */
+(async function(){
+  try{
+    var res = await db.from('profile').select('data').eq('id',1).single();
+    var p=(res&&res.data&&res.data.data)||{};
+    var av=document.getElementById('avatar');
+    if(p['avatar']) av.src=String(p['avatar']);
+    else if(p['soop-id']){ var id=String(p['soop-id']);
+      av.src='https://profile.img.sooplive.co.kr/LOGO/'+id.slice(0,2)+'/'+id+'/'+id+'.jpg'; }
+  }catch(e){}
+})();
+</script>
+<script>
+
+/* ⚠️ 장르 목록은 admin의 장르 select 와 항상 같은 값이어야 한다 (2곳 동기화) */
+var GENRES = ['전체','발라드','K-Pop','J-Pop','Pop','애니','기타'];
+var PAGE = 30;
+var songs=[], curGenre='전체', curPage=1, keyword='';
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderGenres(){
+  document.getElementById('genre-tabs').innerHTML = GENRES.map(function(g){
+    return '<button class="gt'+(g===curGenre?' active':'')+'" onclick="selGenre(\''+g+'\')">'+g+'</button>';
+  }).join('');
+}
+function selGenre(g){ curGenre=g; curPage=1; renderGenres(); render(); }
+function filtered(){
+  var q=keyword.toLowerCase();
+  return songs.filter(function(s){
+    var okG = curGenre==='전체' || s.genre===curGenre;
+    var okQ = !q || String(s.title||'').toLowerCase().indexOf(q)>-1 || String(s.artist||'').toLowerCase().indexOf(q)>-1;
+    return okG && okQ;
+  });
+}
+function render(){
+  var list=filtered();
+  var total=Math.max(1, Math.ceil(list.length/PAGE));
+  if(curPage>total) curPage=1;
+  var items=list.slice((curPage-1)*PAGE, curPage*PAGE);
+  document.getElementById('count').textContent='총 '+list.length+'곡 · '+curPage+'/'+total+' 페이지';
+  var body=document.getElementById('song-body'), pg=document.getElementById('pagination');
+  if(!list.length){
+    body.innerHTML='<tr><td colspan="5"><div class="empty"><span class="empty-icon">♪</span>노래가 없어요</div></td></tr>';
+    pg.innerHTML=''; return;
+  }
+  body.innerHTML=items.map(function(s,i){
+    var num=(curPage-1)*PAGE+i+1;
+    var diff=parseInt(s.difficulty,10)||0, dots='';
+    for(var k=1;k<=5;k++) dots+='<span class="dot'+(k<=diff?' on':'')+'"></span>';
+    return '<tr><td class="s-num">'+num+'</td><td class="s-title">'+esc(s.title)+'</td>'+
+      '<td class="hide-m">'+(esc(s.artist)||'-')+'</td>'+
+      '<td><span class="s-genre">'+(esc(s.genre)||'기타')+'</span></td>'+
+      '<td><span class="s-diff">'+dots+'</span></td></tr>';
+  }).join('');
+  pg.innerHTML='';
+  if(total>1) for(var i=1;i<=total;i++){
+    var b=document.createElement('button');
+    b.className='pg'+(i===curPage?' active':''); b.textContent=i;
+    b.onclick=(function(n){return function(){ curPage=n; render(); window.scrollTo(0,0); }})(i);
+    pg.appendChild(b);
+  }
+}
+async function init(){
+  try{ songs = await fetchAll('songs', { order:'id', asc:true }) || []; }
+  catch(e){ console.warn('songs load failed:', e); songs=[]; }
+  renderGenres(); render();
+  try{ if(typeof initIframeResize==='function') initIframeResize(); }catch(e){}
+  ready();
+}
+document.getElementById('search').addEventListener('input', function(e){
+  keyword=e.target.value.trim(); curPage=1; render();
+});
+init();
+
+</script>
+
+<script>
+var FX_FLOAT = ['✧','✦','♡','☾','✦','♡'];
+var FX_CLICK = '✦';
+var FX_COUNT = 16;
+var FX_TILT  = false;
+</script>
+<script src="../fx.js"></script>
+<script>
+(function(){
+  if(typeof window.fxHearts==='function')return;
+  var SH=['✧','✦','♡','✧','☾','✦'],fx=document.getElementById('fx');
+  for(var i=0;i<18;i++){
+    var s=document.createElement('span');
+    s.className='fxfb';s.textContent=SH[i%SH.length];
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(100+Math.random()*40)+'%';
+    s.style.animationDuration=(9+Math.random()*9)+'s';
+    s.style.animationDelay=(Math.random()*9)+'s';
+    s.style.fontSize=(12+Math.random()*14)+'px';
+    fx.appendChild(s);
+  }
+})();
+</script>
+</body>
+</html>

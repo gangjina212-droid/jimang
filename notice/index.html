@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>공지사항 — 지망ノ</title>
+<meta property="og:title" content="지망ノ · 공지사항">
+<meta property="og:image" content="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+
+.notice-list{display:grid;gap:10px}
+.notice-item{background:#fff;border:3px solid var(--ink);padding:14px 18px;cursor:pointer;
+  box-shadow:3px 3px 0 var(--lilac);transition:var(--transition)}
+body.dark .notice-item{background:#31215c}
+.notice-item:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--magenta)}
+.notice-item.pinned{background:var(--lilac)}
+body.dark .notice-item.pinned{background:#3a2870}
+.notice-header{display:flex;align-items:center;gap:10px}
+.notice-pin{font-size:12.5px;font-weight:800;background:var(--magenta);color:#fff;
+  border:2px solid var(--ink);padding:1px 9px;flex:none}
+.notice-title{font-size:15.5px;font-weight:800;flex:1;min-width:0}
+.notice-thumb{width:44px;height:44px;object-fit:cover;border:2px solid var(--ink);flex:none}
+.notice-date{font-family:var(--f-mono);font-size:12.5px;color:var(--text-soft);flex:none}
+.notice-arrow{color:var(--magenta);font-size:18px;font-weight:800;transition:transform .2s;flex:none}
+.notice-item.open .notice-arrow{transform:rotate(90deg)}
+.notice-content{font-size:15px;color:var(--text-mid);line-height:1.85;
+  max-height:0;overflow:hidden;transition:max-height .3s;white-space:pre-wrap}
+.notice-item.open .notice-content{max-height:3000px;margin-top:12px;padding-top:12px;border-top:3px solid var(--ink)}
+.notice-count{font-family:var(--f-mono);font-size:13px;color:var(--text-soft);margin-bottom:8px}
+.post-img{max-width:100%;margin-bottom:12px;border:3px solid var(--ink)}
+@media(max-width:560px){
+  .notice-title{font-size:15px}
+  .notice-thumb{width:36px;height:36px}
+}
+
+</style>
+</head>
+<body>
+<script>if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark');</script>
+<div id="fx"></div>
+
+<div class="grid">
+  <aside class="side">
+    <div class="s-av" id="avatarWrap"><div class="ring"></div>
+      <img class="avatar avi" id="avatar" src="https://profile.img.sooplive.co.kr/LOGO/ji/jimang2/jimang2.jpg" referrerpolicy="no-referrer" alt="지망ノ"></div>
+    <div class="s-logo"><b>지망ノ</b><span>ジマン · RUSH</span></div>
+    <nav class="s-menu">
+      <a href="../" class="sm">☾ 홈</a>
+      <a href="../profile/" class="sm">✧ 프로필</a>
+      <a href="../notice/" class="sm on">✉ 공지</a>
+      <a href="../schedule/" class="sm">▤ 일정</a>
+      <a href="../work/" class="sm">♡ 업보</a>
+      <a href="../song/" class="sm">♪ 노래책</a>
+      <a href="../dress/" class="sm">✂ 옷장</a>
+      <a href="../minigame/" class="sm">✦ 미니게임</a>
+    </nav>
+    <div class="s-h">T A G S</div>
+    <div class="s-tags"><span class="tag">#시티팝</span><span class="tag">#첫사랑</span><span class="tag">#보라</span></div>
+    <div class="s-util"><a class="ask" href="#" onclick="openAsk();return false">문의</a>
+      <div class="dk" onclick="toggleDark()"><i class="knob"></i></div></div>
+  </aside>
+
+  <main class="page">
+   <div class="container stagger">
+    <div class="pagehero">
+      <div class="ph-left">SIDE A · TRACK 03<br><b>NOTICE</b><br>1st PRESS</div>
+      <div class="ph-center">
+        <div class="ph-title">공지사항</div>
+        <div class="ph-line"></div>
+        <div class="ph-sub">📢 지망ノ의 새 소식</div>
+      </div>
+      <div class="ph-meta">JIMANG<br><b>NOTICE</b><br>UPDATED WEEKLY</div>
+    </div>
+    <div class="card">
+      <span class="card-title">NOTICE</span>
+      <div class="notice-count" id="count"></div>
+      <div class="notice-list" id="notice-list"><div class="spinner"></div></div>
+    </div>
+
+    <footer>© 2026 지망ノ Official.<br>비즈니스 문의 — 문의 버튼을 이용해 주세요</footer>
+   </div>
+  </main>
+</div>
+
+<div class="askmask" id="askmask" onclick="if(event.target===this)closeAsk()">
+  <div class="askmodal">
+    <h3>문의하기</h3>
+    <p>남겨주신 내용은 관리자만 볼 수 있어요.</p>
+    <input class="input" id="askNick" placeholder="닉네임 (선택)" style="margin-bottom:9px">
+    <textarea id="askmsg" placeholder="문의 내용을 적어주세요!"></textarea>
+    <div class="askbtns"><button class="no" onclick="closeAsk()">닫기</button><button class="yes" onclick="sendAsk()">보내기</button></div>
+  </div>
+</div>
+
+<script>
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');
+  syncKnob();
+}
+function syncKnob(){
+  var d=document.body.classList.contains('dark');
+  document.querySelectorAll('.dk .knob').forEach(function(i){i.textContent=d?'☀':'☾'});
+}
+syncKnob();
+function openAsk(){document.getElementById('askmask').classList.add('on')}
+function closeAsk(){document.getElementById('askmask').classList.remove('on')}
+async function sendAsk(){
+  var t=document.getElementById('askmsg').value.trim();
+  if(!t){alert('내용을 입력해 주세요!');return}
+  var nick=document.getElementById('askNick').value.trim();
+  var ok=false;
+  try{ ok = await insertRow('inquiries',{ nickname:nick||null, message:t }); }catch(e){ ok=false; }
+  if(ok){ alert('문의가 전송되었습니다! 💜');
+    document.getElementById('askmsg').value=''; document.getElementById('askNick').value=''; closeAsk(); }
+  else  { alert('전송에 실패했어요. 잠시 후 다시 시도해 주세요.'); }
+}
+function ready(){ document.body.classList.add('ready'); }
+setTimeout(ready,1600);   /* FOUC 폴백 — DB가 느리거나 오프라인이어도 화면은 뜬다 */
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../supabase.js"></script>
+<script>
+/* 아바타는 admin의 avatar > soop-id 순으로 (사이드바는 전 페이지 공통) */
+(async function(){
+  try{
+    var res = await db.from('profile').select('data').eq('id',1).single();
+    var p=(res&&res.data&&res.data.data)||{};
+    var av=document.getElementById('avatar');
+    if(p['avatar']) av.src=String(p['avatar']);
+    else if(p['soop-id']){ var id=String(p['soop-id']);
+      av.src='https://profile.img.sooplive.co.kr/LOGO/'+id.slice(0,2)+'/'+id+'/'+id+'.jpg'; }
+  }catch(e){}
+})();
+</script>
+<script>
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+async function init(){
+  var el=document.getElementById('notice-list');
+  try{
+    var data = await fetchAll('notice', { order:'created_at', asc:false });
+    var all  = data.filter(function(n){return n.pinned}).concat(data.filter(function(n){return !n.pinned}));
+    document.getElementById('count').textContent = '총 ' + all.length + '개의 공지';
+    if(!all.length){ el.innerHTML='<div class="empty"><span class="empty-icon">✉</span>공지사항이 없어요</div>'; return; }
+    el.innerHTML = all.map(function(n){
+      var d=new Date(n.created_at);
+      var ds=d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
+      var imgs=(n.images&&n.images.length)?n.images:(n.image_url?[n.image_url]:[]);
+      var thumb=imgs.length?'<img src="'+imgs[0]+'" class="notice-thumb" referrerpolicy="no-referrer" loading="lazy" alt="">':'';
+      return '<div class="notice-item'+(n.pinned?' pinned':'')+'" onclick="this.classList.toggle(\'open\')">'+
+        '<div class="notice-header">'+(n.pinned?'<span class="notice-pin">고정</span>':'')+
+        '<span class="notice-title">'+esc(n.title)+'</span>'+thumb+
+        '<span class="notice-date">'+ds+'</span><span class="notice-arrow">›</span></div>'+
+        '<div class="notice-content">'+imgs.map(function(u){
+          return '<img src="'+u+'" class="post-img" referrerpolicy="no-referrer" loading="lazy" alt="">'}).join('')+
+        esc(n.content||'')+'</div></div>';
+    }).join('');
+  }catch(e){
+    console.warn('notice load failed:', e);
+    el.innerHTML='<div class="empty"><span class="empty-icon">✉</span>공지를 불러오지 못했어요</div>';
+  }
+  try{ if(typeof initIframeResize==='function') initIframeResize(); }catch(e){}
+  ready();
+}
+init();
+
+</script>
+
+<script>
+var FX_FLOAT = ['✧','✦','♡','☾','✦','♡'];
+var FX_CLICK = '✦';
+var FX_COUNT = 16;
+var FX_TILT  = false;
+</script>
+<script src="../fx.js"></script>
+<script>
+(function(){
+  if(typeof window.fxHearts==='function')return;
+  var SH=['✧','✦','♡','✧','☾','✦'],fx=document.getElementById('fx');
+  for(var i=0;i<18;i++){
+    var s=document.createElement('span');
+    s.className='fxfb';s.textContent=SH[i%SH.length];
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(100+Math.random()*40)+'%';
+    s.style.animationDuration=(9+Math.random()*9)+'s';
+    s.style.animationDelay=(Math.random()*9)+'s';
+    s.style.fontSize=(12+Math.random()*14)+'px';
+    fx.appendChild(s);
+  }
+})();
+</script>
+</body>
+</html>
