@@ -24,6 +24,58 @@
   border-top:24px solid var(--gold);filter:drop-shadow(0 2px 0 var(--ink))}
 .roul-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
   width:52px;height:52px;border-radius:50%;border:4px solid var(--ink);background:var(--magenta)}
+/* ═══ 사다리타기 ═══ */
+.ld-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.ld-count{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:800;
+  border:3px solid var(--ink);background:#fff;padding:4px 8px}
+body.dark .ld-count{background:#31215c;color:#f4ecff}
+.ld-count button{width:26px;height:26px;border:2px solid var(--ink);background:var(--lilac);
+  color:var(--ink);font-size:16px;font-weight:900;line-height:1;cursor:pointer}
+.ld-count b{min-width:22px;text-align:center;font-size:15px}
+.ld-btns{display:flex;gap:7px;margin-left:auto;flex-wrap:wrap}
+.ld-btn{border:3px solid var(--ink);background:var(--magenta);color:#fff;
+  padding:8px 14px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:2px 2px 0 var(--ink);
+  font-family:inherit;transition:var(--transition)}
+.ld-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.ld-btn.ghost{background:#fff;color:var(--ink)}
+body.dark .ld-btn.ghost{background:#31215c;color:#f4ecff}
+.ld-hint{font-size:12.5px;color:var(--text-soft);margin-bottom:8px;line-height:1.6}
+.ld-stage{position:relative;margin-top:2px;overflow:hidden}
+.ld-row{position:relative;height:56px}
+.ld-av{position:absolute;transform:translateX(-50%);width:42px;height:42px;
+  border:3px solid;background:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-mono);font-size:15px;font-weight:800;cursor:default;padding:0;
+  box-shadow:2px 2px 0 rgba(27,15,56,.35);transition:transform .15s ease,opacity .2s ease}
+body.dark .ld-av{background:#31215c;color:#f4ecff}
+.ld-av.clickable{cursor:pointer}
+.ld-av.clickable:hover{transform:translateX(-50%) scale(1.13)}
+.ld-av.done{opacity:.35}
+.ld-name{position:absolute;transform:translateX(-50%);width:84px;top:46px}
+.ld-name input{width:100%;box-sizing:border-box;text-align:center;padding:5px 4px;
+  border:2px solid var(--ink);background:#fff;color:var(--ink);font-size:12.5px;
+  font-weight:700;font-family:inherit;outline:none}
+body.dark .ld-name input{background:#31215c;color:#f4ecff}
+.ld-name .nm{display:block;text-align:center;font-size:12.5px;font-weight:800;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ld-res{position:absolute;transform:translateX(-50%);width:84px}
+.ld-res input{width:100%;box-sizing:border-box;text-align:center;padding:7px 4px;
+  border:2px solid var(--ink);background:#fff;color:var(--ink);font-size:12.5px;
+  font-weight:700;font-family:inherit;outline:none}
+body.dark .ld-res input{background:#31215c;color:#f4ecff}
+.ld-res .mask{display:block;text-align:center;padding:7px 4px;border:3px solid var(--ink);
+  background:var(--lilac);color:var(--ink);font-size:13px;font-weight:800;transition:all .2s ease}
+.ld-res .mask.open{background:#fff;transform:scale(1.07);box-shadow:2px 2px 0 var(--ink)}
+body.dark .ld-res .mask.open{background:#31215c;color:#f4ecff}
+#ldCanvas{display:block;width:100%}
+.ld-runner{position:absolute;width:38px;height:38px;border:3px solid;background:#fff;
+  display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none;
+  transform:translate(-50%,-50%);font-family:var(--f-mono);font-size:14px;font-weight:800;
+  box-shadow:2px 2px 0 rgba(27,15,56,.4)}
+body.dark .ld-runner{background:#31215c;color:#f4ecff}
+.ld-log{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.ld-log div{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;
+  background:var(--paper);border:2px solid var(--ink);border-left-width:6px;padding:7px 12px}
+body.dark .ld-log div{background:#31215c;color:#f4ecff}
 .roul-labels{position:absolute;inset:0;pointer-events:none}
 /* ⚠️ translateX(%) 는 "자기 글자 폭" 기준이라 짧은 글자('1')는 중앙에 뭉친다.
    대신 원 반지름(=50%)만큼 폭을 가진 막대를 회전시키고, 그 바깥 끝에 글자를 붙인다. */
@@ -109,6 +161,29 @@ body.dark .for-card{background:#31215c}
           <div class="roul-list" id="roulList"></div>
         </div>
         <button class="mg-btn" id="roulBtn" onclick="spinRoul()">🎯 돌리기</button>
+      </div>
+    </div>
+
+    <div class="letter e4">
+      <span class="lh">사다리타기</span>
+      <div class="lb" style="padding-bottom:18px">
+        <div class="ld-top">
+          <div class="ld-count">인원
+            <button type="button" onclick="ldSetN(-1)">−</button><b id="ld-n">4</b><button type="button" onclick="ldSetN(1)">+</button>
+          </div>
+          <div class="ld-btns">
+            <button class="ld-btn ghost" type="button" id="ld-reset" style="display:none" onclick="ldReset()">↺ 다시하기</button>
+            <button class="ld-btn ghost" type="button" id="ld-all" style="display:none" onclick="ldRevealAll()">전부 공개</button>
+            <button class="ld-btn" type="button" id="ld-start" onclick="ldStart()">사다리 걸기</button>
+          </div>
+        </div>
+        <div class="ld-hint" id="ld-hint">위에 이름, 아래에 결과를 적고 <b>사다리 걸기</b>를 누르세요. 가로줄은 숨겨지고, 번호를 눌러야 타고 내려갑니다.</div>
+        <div class="ld-stage" id="ld-stage">
+          <div class="ld-row" id="ld-tops" style="height:92px"></div>
+          <canvas id="ldCanvas"></canvas>
+          <div class="ld-row" id="ld-bots" style="height:46px"></div>
+        </div>
+        <div class="ld-log" id="ld-log"></div>
       </div>
     </div>
 
@@ -283,6 +358,263 @@ var FORTUNE=[
   [38,'갑툭튀 조심. 심장 붙잡고 계세요'],
   [20,'오늘은 조용히 눈팅만 하는 게…']
 ];
+
+/* ═══════════ 사다리타기 ═══════════
+   모요 사이트 방식 재현: 가로줄(rung)은 숨긴 채 세로줄만 그리고,
+   번호를 누르면 그 사람만 경로를 따라 내려가며 선이 그려진다. */
+var LD_N=4, ldPhase='setup', LDG=null, ldBusy=false;
+var LD_C=['#e05fb4','#bca5fa','#ffd98a','#6b3fa0','#ff9ede','#4a2a86','#8a4bb4','#ffc4e8','#5ad1c4','#ff8a5c'];
+
+function ldSetN(d){
+  if(ldPhase!=='setup') return;
+  LD_N=Math.min(10, Math.max(2, LD_N+d));
+  document.getElementById('ld-n').textContent=LD_N;
+  ldRenderSetup();
+}
+function ldGeom(){
+  var cv=document.getElementById('ldCanvas');
+  var W=cv.clientWidth||600, H=360;
+  var minPad=Math.max(46, W*0.07);
+  var colW=Math.min(140, (W-minPad*2)/Math.max(1,(LD_N-1)));
+  var pad=(W - colW*(LD_N-1))/2;
+  var rows=(LDG&&LDG.rows)||9, y0=10, y1=H-10, rowH=(y1-y0)/(rows+1);
+  /* ⚠️ 칸 간격이 좁아지면(모바일 + 인원 많음) 이름칸·번호를 같이 줄여야 겹치지 않는다 */
+  var bw=Math.max(26, Math.min(84, colW-6));          /* 이름/결과칸 폭 */
+  var av=Math.max(22, Math.min(42, colW-6));          /* 번호 동그라미 크기 */
+  var fs=bw<44 ? 10 : (bw<62 ? 11.5 : 12.5);          /* 좁을수록 글자도 작게 */
+  return {W:W,H:H,pad:pad,colW:colW,y0:y0,y1:y1,rowH:rowH,rows:rows,bw:bw,av:av,fs:fs};
+}
+function ldRenderSetup(){
+  var keepR=[].slice.call(document.querySelectorAll('#ld-bots .ld-res input')).map(function(i){return i.value});
+  var keepN=(LDG&&LDG.rawNames) ? LDG.rawNames
+            : [].slice.call(document.querySelectorAll('#ld-tops .ld-name input')).map(function(i){return i.value});
+  var g=ldGeom();
+  document.getElementById('ldCanvas').style.height=g.H+'px';
+  document.getElementById('ld-tops').style.height=(g.av+34)+'px';
+  var tops=document.getElementById('ld-tops'), bots=document.getElementById('ld-bots');
+  tops.innerHTML=''; bots.innerHTML='';
+  for(var i=0;i<LD_N;i++){
+    var a=document.createElement('button');
+    a.className='ld-av'; a.type='button'; a.id='ld-av-'+i;
+    a.textContent=(i+1);
+    a.style.left=(g.pad+i*g.colW)+'px'; a.style.top='2px';
+    a.style.width=g.av+'px'; a.style.height=g.av+'px'; a.style.fontSize=(g.av<30?11:15)+'px';
+    a.style.borderColor=LD_C[i%LD_C.length]; a.style.color=LD_C[i%LD_C.length];
+    tops.appendChild(a);
+
+    var nw=document.createElement('div');
+    nw.className='ld-name'; nw.id='ld-name-'+i; nw.style.left=(g.pad+i*g.colW)+'px';
+    nw.style.width=g.bw+'px'; nw.style.top=(g.av+4)+'px'; nw.style.fontSize=g.fs+'px';
+    var ni=document.createElement('input');
+    ni.placeholder=(i+1)+'번'; ni.value=(keepN[i]!==undefined?keepN[i]:'');
+    ni.style.fontSize=g.fs+'px'; ni.style.padding=(g.bw<44?'4px 2px':'5px 4px');
+    nw.appendChild(ni); tops.appendChild(nw);
+
+    var w=document.createElement('div');
+    w.className='ld-res'; w.id='ld-res-'+i; w.style.left=(g.pad+i*g.colW)+'px'; w.style.top='2px';
+    w.style.width=g.bw+'px';
+    var inp=document.createElement('input');
+    inp.placeholder='결과';
+    inp.value=(keepR[i]!==undefined?keepR[i]:(i===0?'당첨 🎁':'꽝'));
+    inp.style.fontSize=g.fs+'px'; inp.style.padding=(g.bw<44?'5px 2px':'7px 4px');
+    w.appendChild(inp); bots.appendChild(w);
+  }
+  ldDrawBase();
+}
+function ldDrawBase(){
+  var cv=document.getElementById('ldCanvas'), g=ldGeom();
+  var dpr=window.devicePixelRatio||1;
+  cv.width=g.W*dpr; cv.height=g.H*dpr;
+  var c=cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0);
+  c.clearRect(0,0,g.W,g.H);
+  c.lineCap='round'; c.lineWidth=4;
+  c.strokeStyle=document.body.classList.contains('dark') ? '#bca5fa' : '#1b0f38';
+  c.globalAlpha=.9;
+  for(var i=0;i<LD_N;i++){
+    var x=g.pad+i*g.colW;
+    c.beginPath(); c.moveTo(x,g.y0); c.lineTo(x,g.y1); c.stroke();
+  }
+  c.globalAlpha=1;
+}
+/* 가로줄 판 만들기.
+   ⚠️ 같은 줄(row)에서 이웃한 두 칸이 동시에 걸리면 경로가 꼬여 1:1 대응이 깨진다
+      → 양쪽 이웃(gi-1, gi+1)을 모두 확인해야 한다. */
+function ldMakeRungs(rows){
+  var rung=[], gi, r;
+  for(gi=0; gi<LD_N-1; gi++){
+    rung[gi]=[];
+    for(r=0;r<rows;r++) rung[gi][r] = (Math.random()<0.45) && !(gi>0 && rung[gi-1][r]);
+  }
+  /* 한 번도 안 걸린 칸은 억지로 하나 만든다 (안 그러면 그냥 직선으로 내려감) */
+  for(gi=0; gi<LD_N-1; gi++){
+    var any=false; for(r=0;r<rows;r++) if(rung[gi][r]) any=true;
+    if(any) continue;
+    for(var k=0;k<rows;k++){
+      r=(((Math.random()*rows)|0)+k)%rows;
+      var leftBusy  = (gi>0)        && rung[gi-1][r];
+      var rightBusy = (gi<LD_N-2)   && rung[gi+1][r];
+      if(!leftBusy && !rightBusy){ rung[gi][r]=true; break; }
+    }
+  }
+  return rung;
+}
+function ldEndsOf(rung,rows){
+  var ends=[];
+  for(var i=0;i<LD_N;i++){
+    var col=i;
+    for(var r=0;r<rows;r++){
+      if(col<LD_N-1 && rung[col][r]) col++;
+      else if(col>0 && rung[col-1][r]) col--;
+    }
+    ends.push(col);
+  }
+  return ends;
+}
+function ldStart(){
+  if(ldPhase!=='setup') return;
+  var rows=9+((Math.random()*3)|0), rung, ends, tries=0;
+  do{
+    rung=ldMakeRungs(rows);
+    ends=ldEndsOf(rung,rows);
+    tries++;
+    var uniq={}, dup=false, same=true;
+    for(var q=0;q<ends.length;q++){ if(uniq[ends[q]]) dup=true; uniq[ends[q]]=1; if(ends[q]!==q) same=false; }
+    if(!dup && !(same && LD_N>1)) break;      /* 대응 깨짐 X + 전원 제자리 X 면 통과 */
+  }while(tries<30);
+  var results=[].slice.call(document.querySelectorAll('#ld-bots .ld-res input'))
+    .map(function(i){ return i.value.trim()||'꽝'; });
+  var rawNames=[].slice.call(document.querySelectorAll('#ld-tops .ld-name input')).map(function(i){return i.value});
+  var names=rawNames.map(function(v,i){ return v.trim()||((i+1)+'번'); });
+  LDG={rows:rows, rung:rung, results:results, names:names, rawNames:rawNames, done:[]};
+  for(var k=0;k<LD_N;k++) LDG.done[k]=false;
+
+  for(var i=0;i<LD_N;i++){
+    var nw=document.getElementById('ld-name-'+i); nw.innerHTML='';
+    var sp=document.createElement('span'); sp.className='nm'; sp.textContent=names[i];
+    sp.style.color=LD_C[i%LD_C.length]; sp.style.fontSize=ldGeom().fs+'px'; nw.appendChild(sp);
+
+    var w=document.getElementById('ld-res-'+i); w.innerHTML='';
+    var m=document.createElement('span'); m.className='mask'; m.id='ld-mask-'+i; m.textContent='?';
+    m.style.fontSize=ldGeom().fs+'px'; m.style.padding=(ldGeom().bw<44?'5px 2px':'7px 4px');
+    w.appendChild(m);
+
+    var a=document.getElementById('ld-av-'+i);
+    a.classList.add('clickable');
+    a.onclick=(function(idx){ return function(){ ldRun(idx,false); }; })(i);
+  }
+  ldPhase='play'; ldBusy=false;
+  document.getElementById('ld-start').style.display='none';
+  document.getElementById('ld-reset').style.display='';
+  document.getElementById('ld-all').style.display='';
+  document.getElementById('ld-hint').textContent='번호를 눌러보세요! 가로줄이 숨겨져 있어서 어디로 갈지 몰라요';
+  ldDrawBase();
+}
+function ldReset(){
+  ldPhase='setup'; LDG=null; ldBusy=false;
+  var rs=document.querySelectorAll('.ld-runner');
+  for(var i=0;i<rs.length;i++) rs[i].parentNode.removeChild(rs[i]);
+  document.getElementById('ld-start').style.display='';
+  document.getElementById('ld-reset').style.display='none';
+  document.getElementById('ld-all').style.display='none';
+  document.getElementById('ld-log').innerHTML='';
+  document.getElementById('ld-hint').innerHTML='위에 이름, 아래에 결과를 적고 <b>사다리 걸기</b>를 누르세요. 가로줄은 숨겨지고, 번호를 눌러야 타고 내려갑니다.';
+  ldRenderSetup();
+}
+function ldPath(start){
+  var g=ldGeom(), col=start, pts=[[g.pad+col*g.colW,g.y0]];
+  for(var r=0;r<g.rows;r++){
+    var y=g.y0+g.rowH*(r+1);
+    pts.push([g.pad+col*g.colW,y]);
+    if(col<LD_N-1 && LDG.rung[col][r]){ col++; pts.push([g.pad+col*g.colW,y]); }
+    else if(col>0 && LDG.rung[col-1][r]){ col--; pts.push([g.pad+col*g.colW,y]); }
+  }
+  pts.push([g.pad+col*g.colW,g.y1]);
+  return {pts:pts, end:col};
+}
+function ldStroke(c,pts,upto,col){
+  c.strokeStyle=col; c.lineWidth=5; c.lineCap='round'; c.lineJoin='round';
+  c.beginPath(); c.moveTo(pts[0][0],pts[0][1]);
+  for(var k=1;k<=upto;k++) c.lineTo(pts[k][0],pts[k][1]);
+  c.stroke();
+}
+function ldFinish(i,end,pts){
+  LDG.done[i]=true;
+  var a=document.getElementById('ld-av-'+i);
+  a.classList.remove('clickable'); a.classList.add('done'); a.onclick=null;
+  var m=document.getElementById('ld-mask-'+end);
+  m.textContent=LDG.results[end]; m.classList.add('open');
+  m.style.borderColor=LD_C[i%LD_C.length];
+  var log=document.createElement('div');
+  log.innerHTML='<b style="color:'+LD_C[i%LD_C.length]+'">'+String(LDG.names[i]).replace(/</g,'&lt;')+'</b> → '+
+                String(LDG.results[end]).replace(/</g,'&lt;');
+  log.style.borderLeftColor=LD_C[i%LD_C.length];
+  document.getElementById('ld-log').appendChild(log);
+  if(typeof window.fxHearts==='function'){
+    var r=document.getElementById('ldCanvas').getBoundingClientRect();
+    window.fxHearts(r.left+pts[pts.length-1][0], r.top+pts[pts.length-1][1], 8);
+  }
+}
+function ldRun(i, instant){
+  if(ldPhase!=='play' || !LDG || LDG.done[i] || ldBusy) return;
+  var p=ldPath(i), pts=p.pts, end=p.end;
+  var cv=document.getElementById('ldCanvas'), c=cv.getContext('2d');
+  if(instant){ ldStroke(c,pts,pts.length-1,LD_C[i%LD_C.length]); ldFinish(i,end,pts); return; }
+  ldBusy=true;
+  var stage=document.getElementById('ld-stage');
+  var crect=cv.getBoundingClientRect(), srect=stage.getBoundingClientRect();
+  var ox=crect.left-srect.left, oy=crect.top-srect.top;
+  var runner=document.createElement('div');
+  runner.className='ld-runner'; runner.textContent=(i+1);
+  runner.style.borderColor=LD_C[i%LD_C.length]; runner.style.color=LD_C[i%LD_C.length];
+  stage.appendChild(runner);
+  var seg=[0], k;
+  for(k=1;k<pts.length;k++) seg[k]=seg[k-1]+Math.sqrt(Math.pow(pts[k][0]-pts[k-1][0],2)+Math.pow(pts[k][1]-pts[k-1][1],2));
+  var total=seg[seg.length-1], SPEED=470, t0=performance.now();
+  (function step(now){
+    var dist=Math.min(total, (now-t0)/1000*SPEED);
+    var kk=1; while(kk<seg.length && seg[kk]<dist) kk++;
+    var a=pts[kk-1], b=pts[Math.min(kk,pts.length-1)];
+    var segLen=(seg[kk]-seg[kk-1])||1, t=(dist-seg[kk-1])/segLen;
+    var x=a[0]+(b[0]-a[0])*t, y=a[1]+(b[1]-a[1])*t;
+    ldDrawBase();
+    for(var j=0;j<LD_N;j++) if(LDG.done[j]){ var q=ldPath(j); ldStroke(c,q.pts,q.pts.length-1,LD_C[j%LD_C.length]); }
+    ldStroke(c,pts,kk-1,LD_C[i%LD_C.length]);
+    c.strokeStyle=LD_C[i%LD_C.length]; c.lineWidth=5;
+    c.beginPath(); c.moveTo(a[0],a[1]); c.lineTo(x,y); c.stroke();
+    runner.style.left=(ox+x)+'px'; runner.style.top=(oy+y)+'px';
+    if(dist<total) requestAnimationFrame(step);
+    else{
+      if(runner.parentNode) runner.parentNode.removeChild(runner);
+      ldBusy=false;
+      ldStroke(c,pts,pts.length-1,LD_C[i%LD_C.length]);
+      ldFinish(i,end,pts);
+    }
+  })(performance.now());
+}
+function ldRevealAll(){
+  if(ldPhase!=='play'||!LDG||ldBusy) return;
+  for(var i=0;i<LD_N;i++) if(!LDG.done[i]) ldRun(i,true);
+}
+function ldRepaint(){
+  if(ldPhase==='setup'){ ldRenderSetup(); return; }
+  var g=ldGeom();
+  for(var i=0;i<LD_N;i++){
+    document.getElementById('ld-av-'+i).style.left=(g.pad+i*g.colW)+'px';
+    var nEl=document.getElementById('ld-name-'+i), rEl=document.getElementById('ld-res-'+i);
+    nEl.style.left=(g.pad+i*g.colW)+'px'; nEl.style.width=g.bw+'px'; nEl.style.top=(g.av+4)+'px';
+    rEl.style.left=(g.pad+i*g.colW)+'px'; rEl.style.width=g.bw+'px';
+    var avEl=document.getElementById('ld-av-'+i);
+    avEl.style.width=g.av+'px'; avEl.style.height=g.av+'px';
+  }
+  ldDrawBase();
+  var c=document.getElementById('ldCanvas').getContext('2d');
+  for(var j=0;j<LD_N;j++) if(LDG.done[j]){ var q=ldPath(j); ldStroke(c,q.pts,q.pts.length-1,LD_C[j%LD_C.length]); }
+}
+(function(){
+  var t;
+  window.addEventListener('resize', function(){ clearTimeout(t); t=setTimeout(ldRepaint, 160); });
+})();
+
 function seedOf(s){
   var h=2166136261;
   for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); }
@@ -318,6 +650,7 @@ function drawFortune(){
   ready();
 })();
 paintRoul();
+try{ ldRenderSetup(); }catch(e){ console.warn('ladder init:', e); }
 
 </script>
 

@@ -343,7 +343,7 @@ body.dark .iq-item{background:#31215c}
         <div class="form-field"><label class="input-label">이름</label><input class="input" id="dr-name"></div>
         <div class="form-field"><label class="input-label">분류</label><select class="input" id="dr-cat"></select></div>
         <div class="form-field full"><label class="input-label">이미지 주소</label><input class="input" id="dr-img" placeholder="https://stimg.sooplive.com/...">
-          <span class="hint">세로 3:4 (900×1200) 권장. SOOP 게시판 업로드 후 이미지 우클릭 → "이미지 주소 복사"</span></div>
+          <span class="hint">세로 3:4 (900×1200) 권장. SOOP 게시판 업로드 후 이미지 우클릭 → "이미지 주소 복사"<br>분류를 <b>🎉 이벤트</b>로 하면 옷장의 <b>이벤트 탭</b>에만 뜹니다 (새 옷 / 기존 옷에는 안 섞임)</span></div>
         <div class="form-field full"><label class="input-label">설명 (선택)</label><input class="input" id="dr-desc"></div>
         <div class="form-field"><label class="chk"><input type="checkbox" id="dr-new" checked>✨ 새 옷으로 올리기</label>
           <span class="hint">체크하면 "새 옷(포스터)" 모드에, 해제하면 "기존 옷" 앨범에 들어갑니다. 나중에 언제든 바꿀 수 있어요</span></div>
@@ -716,7 +716,7 @@ async function addSong(){
 
 /* ═══════════ 옷장 ═══════════ */
 /* ⚠️ 옷장 페이지의 CATS 와 같은 값 (3곳 동기화: 페이지 CATS / 이 select / DRESS_CATS) */
-var DRESS_CATS=[{key:'hair',label:'헤어'},{key:'outfit',label:'의상'},{key:'lens',label:'렌즈'}];
+var DRESS_CATS=[{key:'hair',label:'헤어'},{key:'outfit',label:'의상'},{key:'lens',label:'렌즈'},{key:'event',label:'🎉 이벤트'}];
 document.getElementById('dr-cat').innerHTML=DRESS_CATS.map(function(c){
   return '<option value="'+c.key+'">'+c.label+'</option>'; }).join('');
 function drLabel(k){ var f=DRESS_CATS.filter(function(c){ return c.key===k; })[0]; return f?f.label:k; }
