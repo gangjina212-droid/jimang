@@ -145,8 +145,7 @@ body.dark .dk .knob{top:13px;background:var(--gold)}
 .rl{line-height:var(--rule)}
 .rl p,.rl li,.rl .rh{line-height:var(--rule)}
 .rl .rh{margin:0}
-.rl .rgrp{margin:0 0 var(--rule)}
-.rl .rgrp:last-child{margin-bottom:0}
+.rl .rgrp{margin:0}   /* 규칙 사이 빈 괘선 한 줄씩 넣지 않는다 (줄 간격은 괘선 리듬 그대로) */
 .rl li{padding-top:0;padding-bottom:0}
 .fill{flex:1 1 auto;min-height:var(--rule)}
 /* 기울기·그림자 방향을 일부러 엇갈리게 — 같은 방향이면 그냥 삐딱한 카드로 보인다 */
