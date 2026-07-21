@@ -83,7 +83,10 @@ var FX_TYPE_WAIT_VIEW = true;   // 화면 밖 박스는 보일 때 시작(false 
     @media (prefers-reduced-motion: reduce){ .fx-bounce{ animation:none !important; } }
 
     /* ── 제목 타이핑 ── */
-    .fx-typing{ white-space:pre-wrap; }
+    /* ⚠️ white-space:pre-wrap 금지.
+       HTML 들여쓰기(태그 사이 줄바꿈)가 진짜 빈 줄로 렌더돼 타이핑 중에만 카드가 늘어난다
+       (규칙 사이 빈 줄·문단 앞 빈 줄로 나타남). 글자 간격은 min-height 잠금으로 이미 보호됨 */
+    .fx-typing{ }
     .fx-caret{ display:inline-block; width:.06em; min-width:2px; font-style:normal;
       background:currentColor; opacity:.9; margin-left:.06em; vertical-align:-.08em;
       height:1em; animation:fxCaret .7s steps(1) infinite; }
