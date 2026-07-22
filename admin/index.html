@@ -33,6 +33,11 @@ body.dark .tab-btn{background:#31215c;color:#f4ecff}
 textarea.input{min-height:96px;resize:vertical;line-height:1.7}
 select.input{cursor:pointer}
 .row-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.ord-cell{white-space:nowrap;text-align:center}
+.ord{width:26px;height:26px;margin:0 2px;border:2px solid var(--ink);background:var(--lilac);
+  color:var(--ink);font-size:12.5px;line-height:1;cursor:pointer;font-family:inherit;padding:0}
+.ord:hover:not(:disabled){background:var(--magenta);color:#fff}
+.ord:disabled{opacity:.3;cursor:default}
 .del{width:34px;height:34px;border:3px solid var(--ink);background:#e04b5f;color:#fff;
   font-size:15px;font-weight:800;line-height:1}
 .chk{display:flex;align-items:center;gap:7px;font-size:14.5px;font-weight:700}
@@ -298,7 +303,7 @@ body.dark .iq-item{background:#31215c}
       </div>
       <div class="row-btns"><button class="btn btn-primary" onclick="addType()">+ 종류 추가</button></div>
       <div class="table-wrap" style="margin-top:12px"><table>
-        <thead><tr><th>이름</th><th>분류</th><th>삭제</th></tr></thead>
+        <thead><tr><th>이름</th><th>분류</th><th>순서</th><th>삭제</th></tr></thead>
         <tbody id="utBody"></tbody></table></div>
     </div>
 
@@ -648,10 +653,13 @@ async function loadUpbo(){
       '<td><button class="del" onclick="delRow(\'viewers\','+v.id+',loadUpbo)">✕</button></td></tr>';
   }).join('') : '<tr><td colspan="4">등록된 시청자가 없어요</td></tr>';
 
-  document.getElementById('utBody').innerHTML = types.length ? types.map(function(t){
+  document.getElementById('utBody').innerHTML = types.length ? types.map(function(t,i){
+    var up  ='<button class="ord" title="위로"'+(i===0?' disabled':'')+' onclick="moveType('+t.id+',-1)">▲</button>';
+    var down='<button class="ord" title="아래로"'+(i===types.length-1?' disabled':'')+' onclick="moveType('+t.id+',1)">▼</button>';
     return '<tr><td>'+esc(t.name)+'</td><td>'+esc(t.category)+'</td>'+
+      '<td class="ord-cell">'+up+down+'</td>'+
       '<td><button class="del" onclick="delRow(\'upbo_types\','+t.id+',loadUpbo)">✕</button></td></tr>';
-  }).join('') : '<tr><td colspan="3">등록된 종류가 없어요</td></tr>';
+  }).join('') : '<tr><td colspan="4">등록된 종류가 없어요</td></tr>';
 
   var sel=document.getElementById('cnt-viewer'), cur=sel.value;
   sel.innerHTML = viewers.map(function(v){ return '<option value="'+v.id+'">'+esc(v.nickname)+'</option>'; }).join('');
@@ -686,10 +694,29 @@ async function addViewer(){
   var ok=await insertRow('viewers',{ nickname:n, soop_id:val('vw-id'), sort_order:viewers.length+1 });
   if(ok){ setVal('vw-nick',''); setVal('vw-id',''); loadUpbo(); toast('추가했어요'); } else toast('추가 실패');
 }
+/* 업보 종류 순서 바꾸기 — 표에 보이는 순서대로 위/아래 한 칸 이동.
+   ⚠️ 기존 데이터의 sort_order 가 겹쳐 있을 수 있어(전부 0 등) 두 개만 바꾸면 안 먹는다.
+      → 자리를 바꾼 뒤 전체를 1..N 으로 다시 매긴다. */
+async function moveType(id, dir){
+  var i=-1;
+  for(var k=0;k<types.length;k++) if(types[k].id===id) i=k;
+  var j=i+dir;
+  if(i<0 || j<0 || j>=types.length) return;
+  var list=types.slice();
+  var tmp=list[i]; list[i]=list[j]; list[j]=tmp;
+  try{
+    for(var n=0;n<list.length;n++){
+      if(list[n].sort_order!==n+1) await updateRow('upbo_types', list[n].id, { sort_order:n+1 });
+    }
+    toast('순서를 바꿨어요');
+  }catch(e){ toast('순서 변경 실패'); }
+  loadUpbo();
+}
 async function addType(){
   var n=val('ut-name');
   if(!n){ alert('이름을 넣어주세요'); return; }
-  var ok=await insertRow('upbo_types',{ name:n, category:val('ut-cat'), sort_order:types.length+1 });
+  var maxOrd=0; types.forEach(function(t){ if((t.sort_order||0)>maxOrd) maxOrd=t.sort_order||0; });
+  var ok=await insertRow('upbo_types',{ name:n, category:val('ut-cat'), sort_order:maxOrd+1 });
   if(ok){ setVal('ut-name',''); loadUpbo(); toast('추가했어요'); } else toast('추가 실패');
 }
 
